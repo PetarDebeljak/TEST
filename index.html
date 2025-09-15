@@ -346,7 +346,7 @@
       const res = await fetch(url);
       if(res.ok){
         const text = await res.text();
-        const jsonText = text.replace(/^[^{]+/, '').replace(/;?$/,'');
+       const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
         const data = JSON.parse(jsonText);
         const cols = (data.table.cols||[]).map(c => c.label || c.id || '');
         const rows = (data.table.rows||[]).map(r => (r.c||[]).map(c => (c ? (c.f || c.v || '') : '')));
