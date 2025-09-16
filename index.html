@@ -179,7 +179,12 @@
   const WORKS_SHEETS = {
     'Bakery 1': {
       // Uses the sheet Petar shared (ID extracted from the URL) – sheet name "Work Histories"
-      'Fritsch': { sheetId: '1j3KX2qGjFj9tOHWZLKY_xJMV70wBr5KQfZab0-TYw0k/edit?gid=1835750486#gid=1835750486', sheetName: 'Work History without routines' }
+          // Uses the sheet Petar shared (ID extracted from the URL) – sheet tab "Work History without routines"
+      'Fritsch': {
+        sheetId: '1j3KX2qGjFj9tOHWZLKY_xJMV70wBr5KQfZab0-TYw0k',
+        sheetName: 'Work History without routines',
+        gid: '1835750486'
+      }
     },
     'Bakery 2': {},
     'Bakery 3': {}
@@ -443,7 +448,7 @@
     }
     try{
       container.innerHTML = '<div class="small">Loading Work History…</div>';
-      const table = await fetchSheetTable(entry.sheetId, entry.sheetName||'Sheet1');
+        const table = await fetchSheetTable(entry.sheetId, entry.sheetName||'Sheet1', entry.gid);
       renderWorksTable(container, table);
       const adminLink = document.createElement('div'); adminLink.className='small'; adminLink.style.marginTop='8px';
       adminLink.innerHTML = `<a href="https://docs.google.com/spreadsheets/d/${entry.sheetId}/edit" target="_blank" rel="noopener">Open in Google Sheets (Admin)</a>`;
