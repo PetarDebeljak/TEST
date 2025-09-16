@@ -60,6 +60,23 @@
   .icon-btn{min-width:34px;min-height:34px;border-radius:999px;border:1px solid #cbd5e1;background:#2563eb;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
   .icon-btn svg{width:16px;height:16px;display:block}
   footer{height:1px}
+  .works-table{display:flex;flex-direction:column;gap:12px}
+  .works-table__controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+  .works-table__search{flex:1;min-width:220px}
+  .works-table__search input{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #cbd5e1;background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(15,23,42,.04)}
+  .works-table__actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .works-table__notice{font-size:.82rem;color:var(--muted)}
+  .works-table__scroll{max-height:70vh;overflow:auto;border-radius:12px;border:1px solid #e2e8f0;background:#fff;box-shadow:0 12px 30px rgba(15,23,42,.08)}
+  .works-table__table{width:100%;border-collapse:separate;border-spacing:0;font-size:.95rem;color:var(--ink);font-variant-numeric:tabular-nums}
+  .works-table__table thead th{position:sticky;top:0;background:#f1f5f9;padding:12px 14px;border-bottom:1px solid #dbeafe;font-weight:600;text-align:left;cursor:pointer;transition:background .2s,color .2s}
+  .works-table__table th,.works-table__table td{padding:12px 14px;border-bottom:1px solid #eef2f7;vertical-align:top;word-break:break-word;min-width:120px}
+  .works-table__table tbody tr:nth-child(even){background:#f8fafc}
+  .works-table__table tbody tr:hover{background:#eef2ff}
+  .works-table__table td.is-sorted{background:rgba(37,99,235,.08)}
+  .works-table__table th.is-sorted{color:var(--brand);background:#e2e8ff}
+  .sort-indicator{margin-left:6px;font-size:.75rem;opacity:.6}
+  .works-table__empty{padding:24px;text-align:center;color:var(--muted)}
+  .works-table__meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;font-size:.82rem;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -353,9 +370,26 @@
         const text = await res.text();
        const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
         const data = JSON.parse(jsonText);
-        const cols = (data.table.cols||[]).map(c => c.label || c.id || '');
-        const rows = (data.table.rows||[]).map(r => (r.c||[]).map(c => (c ? (c.f || c.v || '') : '')));
-        return { headers: cols, rows };
+        const tableData = data.table || {};
+        let rows = (tableData.rows||[]).map(r => (r.c||[]).map(c => (c ? (c.f ?? c.v ?? '') : '')));
+        const firstRow = rows[0] || [];
+        let usedFirstRowForHeaders = false;
+        let headers = (tableData.cols||[]).map((col, idx) => {
+          const rawLabel = (col.label ?? '').toString().trim();
+          if(rawLabel){ return rawLabel; }
+          const fallback = firstRow[idx] != null ? String(firstRow[idx]).trim() : '';
+          if(fallback){ usedFirstRowForHeaders = true; return fallback; }
+          return `Column ${idx+1}`;
+        });
+        if(usedFirstRowForHeaders && firstRow.length){
+          const matches = headers.every((h, idx) => {
+            const val = firstRow[idx] != null ? String(firstRow[idx]).trim() : '';
+            return val && val === h;
+          });
+          if(matches){ rows = rows.slice(1); }
+        }
+        headers = headers.map((h, idx) => (h && h.trim()) ? h.trim() : `Column ${idx+1}`);
+        return { headers, rows };
       }
       if(!gid) throw new Error('Sheet fetch failed '+res.status);
     }
@@ -381,63 +415,272 @@
         }
       }
       if (field.length || row.length) { row.push(field); rows.push(row); }
-      const headers = rows.shift() || [];
+     const headers = (rows.shift() || []).map(v => (v ?? '').toString().trim());
       return { headers, rows };
     }
     throw new Error('No sheetName or gid configured.');
   }
 
-  function renderWorksTable(container, table){
+  function renderWorksTable(container, table, options={}){
     container.innerHTML = '';
-    const bar = document.createElement('div'); bar.className='toolbar';
-    const search = document.createElement('input'); search.type='search'; search.placeholder='Search…';
-    const dlBtn = document.createElement('button'); dlBtn.className='btn ghost'; dlBtn.textContent='Download CSV';
-    bar.append(search, dlBtn); container.appendChild(bar);
+    const root = document.createElement('div'); root.className='works-table';
+    container.appendChild(root);
 
-    const wrapper = document.createElement('div');
-    wrapper.style.overflowX='auto'; wrapper.style.background='#fff'; wrapper.style.border='1px solid #e2e8f0'; wrapper.style.borderRadius='10px';
-    const tableEl = document.createElement('table'); tableEl.style.width='100%'; tableEl.style.borderCollapse='separate'; tableEl.style.borderSpacing='0'; tableEl.style.fontSize='0.95rem';
-    wrapper.appendChild(tableEl); container.appendChild(wrapper);
+    const controls = document.createElement('div'); controls.className='works-table__controls'; root.appendChild(controls);
 
-    const thead = document.createElement('thead'); const trh = document.createElement('tr');
-    table.headers.forEach((h, idx) => {
-      const th = document.createElement('th'); th.textContent = h || `Col ${idx+1}`;
-      th.style.textAlign='left'; th.style.padding='10px'; th.style.borderBottom='1px solid #e2e8f0'; th.style.background='#f8fafc'; th.style.position='sticky'; th.style.top='0'; th.style.zIndex='1'; th.style.cursor='pointer'; th.title = 'Click to sort';
-      th.addEventListener('click', () => { sortBy(idx); });
-      trh.appendChild(th);
-    });
+    const searchWrap = document.createElement('div'); searchWrap.className='works-table__search'; controls.appendChild(searchWrap);
+    const searchInput = document.createElement('input'); searchInput.type='search'; searchInput.placeholder='Search records…'; searchWrap.appendChild(searchInput);
+
+    const actions = document.createElement('div'); actions.className='works-table__actions'; controls.appendChild(actions);
+
+    const adminSignInBtn = document.createElement('button'); adminSignInBtn.type='button'; adminSignInBtn.className='btn'; adminSignInBtn.textContent='Admin: Sign in'; actions.appendChild(adminSignInBtn);
+    const adminSignOutBtn = document.createElement('button'); adminSignOutBtn.type='button'; adminSignOutBtn.className='btn ghost'; adminSignOutBtn.textContent='Admin: Sign out'; actions.appendChild(adminSignOutBtn);
+    const csvBtn = document.createElement('button'); csvBtn.type='button'; csvBtn.className='btn ghost'; csvBtn.textContent='Download CSV'; actions.appendChild(csvBtn);
+    const openSheetBtn = document.createElement('button'); openSheetBtn.type='button'; openSheetBtn.className='btn ghost'; openSheetBtn.textContent='Open sheet (Admin)'; actions.appendChild(openSheetBtn);
+
+    const notice = document.createElement('div'); notice.className='works-table__notice'; root.appendChild(notice);
+
+    const scroll = document.createElement('div'); scroll.className='works-table__scroll'; root.appendChild(scroll);
+    const tableEl = document.createElement('table'); tableEl.className='works-table__table'; scroll.appendChild(tableEl);
+
+    const thead = document.createElement('thead'); const headerRow = document.createElement('tr'); thead.appendChild(headerRow); tableEl.appendChild(thead);
     thead.appendChild(trh); tableEl.appendChild(thead);
 
     const tbody = document.createElement('tbody'); tableEl.appendChild(tbody);
-    let currentRows = table.rows.slice(); let sortCol = -1, sortDir = 1;
+   const indicators = [];
+    const headers = table.headers.length ? table.headers : table.rows[0]?.map((_, idx) => `Column ${idx+1}`) || [];
+    headers.forEach((label, idx) => {
+      const th = document.createElement('th'); th.tabIndex = 0; th.setAttribute('aria-sort','none');
+      const titleSpan = document.createElement('span'); titleSpan.textContent = label || `Column ${idx+1}`;
+      const indicator = document.createElement('span'); indicator.className='sort-indicator'; indicator.textContent='';
+      th.append(titleSpan, indicator);
+      th.addEventListener('click', () => sortBy(idx));
+      th.addEventListener('keydown', (ev)=>{ if(ev.key==='Enter' || ev.key===' '){ ev.preventDefault(); sortBy(idx); } });
+      headerRow.appendChild(th);
+      indicators[idx] = { th, indicator };
+    });
 
-    function renderBody(){
-      const q = (search.value||'').toLowerCase();
-      tbody.innerHTML = '';
-      currentRows.forEach(r => {
-        if(q){ const hit = r.some(v => String(v||'').toLowerCase().includes(q)); if(!hit) return; }
-        const tr = document.createElement('tr');
-        r.forEach(v=>{ const td = document.createElement('td'); td.textContent = v==null ? '' : String(v); td.style.padding='10px'; td.style.borderBottom='1px solid #eef2f7'; tr.appendChild(td); });
-        tbody.appendChild(tr);
+    const meta = document.createElement('div'); meta.className='works-table__meta'; root.appendChild(meta);
+
+    let currentRows = table.rows.slice();
+    const totalRows = currentRows.length;
+    const columnTypes = inferColumnTypes(headers, table.rows);
+    let sortCol = -1;
+    let sortDir = 'desc';
+    let isAdmin = !!options.isAdmin;
+
+    function updateAdminUI(){
+      if(isAdmin){
+        notice.textContent = 'Admin tools unlocked — you can download CSV or open the sheet for editing.';
+        adminSignInBtn.style.display='none';
+        adminSignOutBtn.style.display='';
+        csvBtn.style.display='';
+        openSheetBtn.style.display='';
+      } else {
+        notice.textContent = 'Sign in with your admin Google account to download CSV or edit the sheet.';
+        adminSignInBtn.style.display='';
+        adminSignOutBtn.style.display='none';
+        csvBtn.style.display='none';
+        openSheetBtn.style.display='none';
+      }
+    }
+
+    function setAdminState(next){
+      isAdmin = !!next;
+      updateAdminUI();
+      if(typeof options.onAdminStateChange === 'function'){ options.onAdminStateChange(isAdmin); }
+    }
+
+    function formatCount(){
+      if(!totalRows){ return 'No records available.'; }
+      if(currentRows.length === totalRows){ return `Showing all ${totalRows} records.`; }
+      return `Showing ${currentRows.length} of ${totalRows} records.`;
+    }
+
+    function parseNumberValue(val){
+      if(val==null || val===''){ return null; }
+      if(typeof val === 'number' && Number.isFinite(val)){ return val; }
+      const str = String(val).trim(); if(!str){ return null; }
+      const normalized = str.replace(/\s+/g,'').replace(/,(?=\d{3}(?:[^\d]|$))/g,'').replace(',','.');
+      if(!/^[-+]?\d*(?:\.\d+)?$/.test(normalized)){ return null; }
+      const num = Number(normalized); return Number.isFinite(num) ? num : null;
+    }
+
+    function parseDateValue(val){
+      if(!val && val!==0){ return null; }
+      if(val instanceof Date && !isNaN(val)){ return val.getTime(); }
+      const str = String(val).trim(); if(!str){ return null; }
+      const direct = Date.parse(str);
+      if(!Number.isNaN(direct)){ return direct; }
+      const m = str.match(/^(\d{1,2})[\.\/-](\d{1,2})[\.\/-](\d{2,4})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?)?$/);
+      if(m){
+        const day = parseInt(m[1],10);
+        const month = parseInt(m[2],10)-1;
+        let year = parseInt(m[3],10);
+        if(year < 100){ year += year >= 70 ? 1900 : 2000; }
+        const hour = m[4] ? parseInt(m[4],10) : 0;
+        const minute = m[5] ? parseInt(m[5],10) : 0;
+        const second = m[6] ? parseInt(m[6],10) : 0;
+        const date = new Date(year, month, day, hour, minute, second);
+        if(date.getFullYear()===year && date.getMonth()===month && date.getDate()===day){
+          return date.getTime();
+        }
+      }
+      return null;
+    }
+
+    function inferColumnTypes(headersList, rowsList){
+      return headersList.map((header, idx) => {
+        const headerLower = (header||'').toLowerCase();
+        if(headerLower.includes('date')){ return 'date'; }
+        let dateHits = 0, numberHits = 0;
+        for(let i=0;i<rowsList.length;i++){
+          const cell = rowsList[i]?.[idx];
+          if(cell==null || cell===''){ continue; }
+          if(parseDateValue(cell)!=null){ dateHits++; continue; }
+          if(parseNumberValue(cell)!=null){ numberHits++; }
+        }
+        if(dateHits && dateHits >= numberHits){ return 'date'; }
+        if(numberHits){ return 'number'; }
+        return 'text';
       });
     }
 
-    function sortBy(colIdx){
-      if(sortCol === colIdx){ sortDir *= -1; } else { sortCol = colIdx; sortDir = 1; }
-      currentRows.sort((a,b)=>{ const va = (a[colIdx]??'').toString().toLowerCase(); const vb = (b[colIdx]??'').toString().toLowerCase(); if(va<vb) return -1*sortDir; if(va>vb) return 1*sortDir; return 0; });
-      renderBody();
+    function getSortableValue(value, type){
+      if(value==null || value===''){ return null; }
+      if(type==='number'){
+        const num = parseNumberValue(value);
+        if(num!=null){ return num; }
+        const dateAlt = parseDateValue(value);
+        if(dateAlt!=null){ return dateAlt; }
+      }
+      if(type==='date'){
+        const ts = parseDateValue(value);
+        if(ts!=null){ return ts; }
+        const numeric = parseNumberValue(value);
+        if(numeric!=null){ return numeric; }
+      }
+      return String(value).toLowerCase();
     }
 
-    search.addEventListener('input', renderBody);
-    dlBtn.onclick = ()=>{
+    function compareValues(a,b,type){
+      if(a===b){ return 0; }
+      if(a==null){ return 1; }
+      if(b==null){ return -1; }
+      if(type==='text'){ return String(a).localeCompare(String(b)); }
+      return a < b ? -1 : 1;
+    }
+
+    function updateMeta(){ meta.textContent = formatCount(); }
+
+    function renderBody(){
+     tbody.innerHTML='';
+      if(!currentRows.length){
+        const tr = document.createElement('tr');
+      const td = document.createElement('td'); td.colSpan = headers.length || 1; td.className='works-table__empty'; td.textContent='No matching records.';
+        tr.appendChild(td); tbody.appendChild(tr);
+      } else {
+        currentRows.forEach(row => {
+          const tr = document.createElement('tr');
+          row.forEach((cell, idx) => {
+            const td = document.createElement('td');
+            const value = cell==null ? '' : String(cell);
+            if(idx === sortCol){ td.classList.add('is-sorted'); }
+            td.textContent = value;
+            tr.appendChild(td);
+          });
+          tbody.appendChild(tr);
+        });
+      }
+      updateMeta();
+    }
+
+    function applySort(){
+      if(sortCol < 0){ return; }
+      const type = columnTypes[sortCol] || 'text';
+      currentRows.sort((a,b) => {
+        const av = getSortableValue(a?.[sortCol], type);
+        const bv = getSortableValue(b?.[sortCol], type);
+        const cmp = compareValues(av,bv,type);
+        return sortDir === 'asc' ? cmp : -cmp;
+      });
+    }
+
+   function updateSortIndicators(){
+      indicators.forEach((entry, idx) => {
+        const { th, indicator } = entry;
+        if(sortCol === idx){
+          th.classList.add('is-sorted');
+          th.setAttribute('aria-sort', sortDir === 'asc' ? 'ascending' : 'descending');
+          indicator.textContent = sortDir === 'asc' ? '▲' : '▼';
+        } else {
+          th.classList.remove('is-sorted');
+          th.setAttribute('aria-sort','none');
+          indicator.textContent='';
+        }
+      });
+    }
+
+    function applyFilters(){
+      const term = (searchInput.value||'').trim().toLowerCase();
+      currentRows = table.rows.filter(row => {
+        if(!term){ return true; }
+        return row.some(cell => String(cell??'').toLowerCase().includes(term));
+      });
+      applySort();
+      renderBody();
+      updateSortIndicators();
+    }
+
+    sfunction sortBy(colIdx){
+      if(sortCol === colIdx){
+        sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+      } else {
+        sortCol = colIdx;
+        sortDir = columnTypes[colIdx] === 'date' ? 'desc' : 'asc';
+      }
+      applyFilters();
+    }
+
+    searchInput.addEventListener('input', () => { applyFilters(); });
+
+    csvBtn.addEventListener('click', () => {
+      if(!isAdmin){ return; }
       const esc = (s)=>('"'+String(s??'').replace(/"/g,'""')+'"');
-      const lines = [ table.headers.map(esc).join(','), ...currentRows.map(row=>row.map(esc).join(',')) ].join('\r\n');
+      const lines = [ headers.map(esc).join(','), ...currentRows.map(row=>row.map(esc).join(',')) ].join('\r\n');
       const blob = new Blob([lines], {type:'text/csv'});
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a'); a.href=url; a.download='work_history.csv'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url), 5000);
-    };
+    });
 
-    renderBody();
+    openSheetBtn.addEventListener('click', () => {
+      if(!isAdmin){ alert('Please sign in as admin first.'); return; }
+      const entry = options.sheetEntry || {};
+      let url = `https://docs.google.com/spreadsheets/d/${entry.sheetId}/edit`;
+      if(entry.gid){ url += `#gid=${entry.gid}`; }
+      window.open(url, '_blank', 'noopener');
+    });
+
+    adminSignInBtn.addEventListener('click', async () => {
+      if(typeof options.requestAdminSignIn !== 'function'){ return; }
+      try{
+        adminSignInBtn.disabled = true; adminSignInBtn.textContent = 'Signing in…';
+        await options.requestAdminSignIn();
+        setAdminState(true);
+      }catch(e){
+        alert('Admin sign-in failed: '+(e.message||String(e)));
+      }finally{
+        adminSignInBtn.disabled = false; adminSignInBtn.textContent = 'Admin: Sign in';
+      }
+    });
+
+    adminSignOutBtn.addEventListener('click', () => {
+      if(typeof options.signOutAdmin === 'function'){ options.signOutAdmin(); }
+      setAdminState(false);
+    });
+
+    updateAdminUI();
+    applyFilters();
   }
 
   async function drawWorksSheetView(bakery, machine, container){
@@ -448,11 +691,13 @@
     }
     try{
       container.innerHTML = '<div class="small">Loading Work History…</div>';
-        const table = await fetchSheetTable(entry.sheetId, entry.sheetName||'Sheet1', entry.gid);
-      renderWorksTable(container, table);
-      const adminLink = document.createElement('div'); adminLink.className='small'; adminLink.style.marginTop='8px';
-      adminLink.innerHTML = `<a href="https://docs.google.com/spreadsheets/d/${entry.sheetId}/edit" target="_blank" rel="noopener">Open in Google Sheets (Admin)</a>`;
-      container.appendChild(adminLink);
+     const table = await fetchSheetTable(entry.sheetId, entry.sheetName||'Sheet1', entry.gid);
+      renderWorksTable(container, table, {
+        isAdmin: isAdminSignedIn(),
+        sheetEntry: entry,
+        requestAdminSignIn: async () => { await ensureAuth(); },
+        signOutAdmin: () => { accessToken = null; }
+      });
       return true;
     }catch(e){
       container.innerHTML = `<div class="small">Failed to load Work History: ${escapeHtml(e.message||String(e))}</div>`;
@@ -505,7 +750,8 @@
     if (catKey === 'works') {
       const sheetEntry = WORKS_SHEETS?.[b]?.[m];
       if (sheetEntry && sheetEntry.sheetId) {
-        file.style.display = 'none'; up.style.display = 'none'; refresh.style.display = 'none'; adminBtn.style.display = 'none';
+       bar.style.display = 'none';
+        file.style.display = 'none'; up.style.display = 'none'; refresh.style.display = 'none'; adminBtn.style.display = 'none'; search.style.display='none';
         drawWorksSheetView(b, m, list).catch(e => { list.innerHTML = `<div class="small">Failed to load Work History: ${escapeHtml(e.message||String(e))}</div>`; });
         return; // do not render Drive listing when Sheet view is used
       }
