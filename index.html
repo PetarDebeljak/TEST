@@ -36,7 +36,7 @@
   .tile p{margin:0;color:var(--muted);font-size:.9rem}
   .tile:active{transform:translateY(1px)}
 
-  .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
   .square{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center}
   .c1{background:#fef3c7}
   .c2{background:#dbeafe}
@@ -60,6 +60,7 @@
   .icon-btn{min-width:34px;min-height:34px;border-radius:999px;border:1px solid #cbd5e1;background:#2563eb;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
   .icon-btn svg{width:16px;height:16px;display:block}
   footer{height:1px}
+
   .works-table{display:flex;flex-direction:column;gap:12px}
   .works-table__controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
   .works-table__search{flex:1;min-width:220px}
@@ -102,74 +103,7 @@
 
   <!-- PREVIEW MODAL -->
   <div id="previewBackdrop" style="position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;z-index:9998;">
-    <div id="previewCard" style="position:absolute;left:50%;top:50%;transform:translate(-50%, -50%);width:min(100vw,980px);height:min(100vh,88vh);background:#ffffff;border:1px solid #e2e8f0;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.25);overflow:hidden;">
-      <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e2e8f0;background:#f8fafc;padding:8px 12px;">
-        <div id="previewTitle" style="font-weight:600;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Preview</div>
-        <div style="display:flex;gap:8px;align-items:center">
-          <a id="previewDownload" class="btn" style="text-decoration:none;padding:6px 10px;border-radius:10px;background:#2563eb;color:#fff">Download</a>
-          <button id="previewClose" class="btn ghost" style="padding:6px 10px;border-radius:10px;border:1px solid #cbd5e1;background:#fff;color:#1e293b">Close</button>
-        </div>
-      </div>
-      <div id="wm" style="position:absolute;inset:0;pointer-events:none;display:none;align-items:center;justify-content:center;z-index:2">
-        <div style="transform:rotate(-25deg);font-weight:800;font-size:48px;color:#0f172a12">CONFIDENTIAL — PANELTO</div>
-      </div>
-      <iframe id="previewFrame" style="width:100%;height:calc(100% - 46px);border:0;background:#fff"></iframe>
-    </div>
-  </div>
-
-  <main>
-    <nav class="crumbs" id="crumbs"></nav>
-    <section id="view">
-      <div class="stack">
-        <a class="tile" href="?bakery=Bakery%201"><h2>Bakery 1</h2><p>Open</p></a>
-        <a class="tile" href="?bakery=Bakery%202"><h2>Bakery 2</h2><p>Open</p></a>
-        <a class="tile" href="?bakery=Bakery%203"><h2>Bakery 3</h2><p>Open</p></a>
-      </div>
-    </section>
-  </main>
-  <footer></footer>
-
-  <!-- Google Identity Services + Google API client -->
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <script src="https://apis.google.com/js/api.js" async defer></script>
-
-  <script>
-  /******** QUICK SETUP ********/
-  // NOTE: You chose full Drive scope so admins can upload/delete. That's fine for an internal portal.
-  const CLIENT_ID = '937032004801-nfma3pp3fkkck4mfk094imqgmvduj7ih.apps.googleusercontent.com';
-  const API_KEY   = 'AIzaSyDnEsld28xzG1lQROwBO_ImDq2SxX4kcg8';
-  const SCOPES    = 'https://www.googleapis.com/auth/drive';
-
-  // Machine map (from our QR project)
-  const MACHINES = {
-    'Bakery 1': ['Mixing','Fermentation','Fritsch','Proover','Oven','Cooler','Freezer'],
-    'Bakery 2': ['Mixing','Fermentation','Spiro','Scarifier','Retarder','Rademaker','Proover','Pattyn Tilting Conveyer','Packing','Oven','MIB','Freezer','Cooler','Baggers','AHU'],
-    'Bakery 3': ['Site 1 Packing','Site 2 Packing','Paletiser','Retail']
-  };
-
-  // Drive folder mapping per category
-  const FOLDERS = {
-    'Bakery 1': {
-      'Fritsch':      {documentation:'1uKMNjOdQltXZDMOrjs8nCDdQNdU0Dupw', works:'1M0NE6MtE0i-RNcckiFT8KCoMMwYdOdG_', electrical:'1RCWfvgcjDVCbutedlh3lyWjJ_kW5As9L', procedures:'1ismVYGrYFzwSbzxcoY_xki_KLhkdPpz0'},
-      'Mixing':       {documentation:'1YG_ASV5ZG_rcSMKfcpjfU42w52CISWOn', works:'1NSIQBwmVfrocWgnMNOifWPDEmGx4dsc1', electrical:'1MiaraFYz59FaoMY_P-83-x5nyiB5-oFM', procedures:'1LMez4eD_gbCg70NBXxo73YgjZHthzs6U'},
-      'Oven':         {documentation:'1t5dNT63qYVHzvH07UK4zqjs2c2jmdY0p', works:'1pu8f-rkqxH6x_q69X8xmCdEuCDambyjF', electrical:'1w1N5FbwoRPDYYkU3UvCINLece900dlMZ', procedures:'10sw8HYDASd0RrmgBysexwXnR45uKVpAB'},
-      'Fermentation': {documentation:'1_7M91rSDdjP955aa3kVws2ckd6fMqhd2', works:'1qo4xBLzKMWuQivKdP_ae1d-sLrhIUFuj', electrical:'1J8VL8DAIq1NSpa0TMoO_RHcS9gAv4kL3', procedures:'1-6fpU69xeUINtjJZs5or9RQ8ijt4wvl0'},
-      'Proover':      {documentation:'1teDMsKfN8BFiq4tI6ml2Z3zAYvq8TAp3', works:'1_UUtAmRYoUSRxypEIroIzNtXmdQ4V7lf', electrical:'1t46LgFl2vlCyWMRzt3nH4G8kUHjBYJa7', procedures:'1RPm3egkh7Lmx2TBxXps0v6npE-f54dJr'},
-      'Freezer':      {documentation:'1-7C36DI_QIi-SHLPjOte9MVtE35EG5fN', works:'11H4BO7p-kPX2_3kPWW2wRzLp6Hk9JtPi', electrical:'1dQIp2J1HMv0gLYG4_P8B3D3sAHYEUBk9', procedures:'1oiO_33P7kT34wVM2oEbKQ8PGQcvk0M5P'},
-      'Cooler':       {documentation:'1H7FGsJFHmKkarrIGsbW2OuoMKK69WfdZ', works:'15-7Vvr-4FyZ7zbfNUY17qh0Gi6Si-M02', electrical:'1MXGIDNGMstOwHEdrywqk-SRuJcf6WnJX', procedures:'1DGyNIYh62A82On7Q_TYeHnPMTZRdLsac'}
-    },
-    'Bakery 2': {
-      'Mixing':       {documentation:'1_kzKmh_I-eZVktunneF5ALqMIVBFSANG', works:'1hmMsIkNbsQVlwHkQ8Ow5KVTA3vDwSPlH', electrical:'1VBfupXPwz3Pxhum3RCOZdCylW0AK7Mf0', procedures:'1q8fLx5e0MuLJAVh10Ea7oAONPyyomXXA'},
-      'Fermentation': {documentation:'15r13fCr4CxGuK00Lbg-W__kjn5nET0Hj', works:'1wiSxlj8bkQ13lU3G701ztg8gNqiI6fyg', electrical:'1UOzZbFjwfCtQcWG04-xXN6vdJuNp0zwh', procedures:'1kN7MMl9TE0yCZ-J42860MWz4ZmGWF7Dw'},
-      'Spiro':        {documentation:'1JZXSmYawAyyXvWT2jnUovaqX3D-fJ0EH', works:'1Q35Y56uV4yjwOr1140Eyj8TpOPMalvpc', electrical:'1QcxnK2LjNhSvv66_ae3kPV8K6vQfu4fI', procedures:'1NRoHEF1MesnbjzA1Cg5Q3vw1TtKhJSYD'},
-      'Scarifier':    {documentation:'1m6I1Og91ma9-FEf4uGKqg5OZ-sNJJLrG', works:'1yb5vRkm1fbluscJ41RNIv2_uFIMVHjGE', electrical:'1L3Pq0cBlKZ6SaTpBr4HANygvz4p4hmhI', procedures:'1Rxgeet6GRX_aHcfFJhNN8jK1hDH2m4Mg'},
-      'Retarder':     {documentation:'1jg0FvErsRrnz_mOOeu3mCJAwX3AlJ26W', works:'1XqlFXZmukKz-tgVXoDMsXICQFgDcUVZE', electrical:'1i_azmPjg2oz5-4X8gLEbugT1dJ3-AzwF', procedures:'1ueMJa-EF_RMUvqQy-ETP1wkSswoAQkds'},
-      'Rademaker':    {documentation:'1QRlaG20Rtc30iaKwdYbWHrNZId7k9URq', works:'1Li4ckJxG2qPOP8NQ13pDeHOgBo9Oig_H', electrical:'1qYv1EHkzzzdEMRT6aBFUYmNLHDVDcTUS', procedures:'1rPA3eIXUkBJyZqhQifAbYPcBDsbTa7EP'},
-      'Proover':      {documentation:'1WcQWdVOYqqobaD8uoc3s5l1FCw8xkHim', works:'1J7FF4Rcmhpme0ltz0c6cmFvtNPCHHFSk', electrical:'1Az4ig6kyEK-ubVenXNJOmsTwTqezQDQ1', procedures:'1JuNU5TJvIW3mDHCkWHYbdqVBWlAmj83C'},
-      'Pattyn Tilting Conveyer':{documentation:'1mI6mpPWbIRmOiwbl9iQdUvF9SHdISij2', works:'1QQH0oYPbNr_R1wj8VxIMwlFvW0x4zza2', electrical:'1zJ8v5-ghuO7x9RbtttIbVttj7e9b5Q-i', procedures:'1wj2BtkPnTQvEuyluzseBXxrkK9OGB7in'},
-      'Packing':      {documentation:'1tTpmHrNiK3eO-8UME6amkBGcBCqogOoG', works:'1jxDJO0hSSHQ-8KIQSQUcCmocq0jyGQWb', electrical:'14PUHHjr0GOtNaMQPTADKCxj7pZCa9Do5', procedures:'1myVmfW9HnlfRdM-FMeAx1REqaiSBhqFs'},
-      'Oven':         {documentation:'1GHVtXJi0KMPdIf7z_W0SGU0BiudjQPSO', works:'1wOn_2XRKn9WP8PK8quuL9fGxS56-GMJp', electrical:'1DGl4po1gULH2gQkYC_4I5eWemomZf_D8', procedures:'1mknL-hrBx3AbPbpMElftIyKkqqs1jwnM'},
-      'MIB':          {documentation:'1twize6Omq1WUxt631UIlvXoWG6Kmy-XS', works:'1gbII6qemYbyQVSjGivbn8_Ku6cEFX1pR', electrical:'1c4vr73nrDie8sGfGz2VqvMMYhGh1z-Fn', procedures:'1NI0RK4Mp6zeyJ0R1PFfam_auoHJAMRfs'},
+@@ -156,52 +174,56 @@
       'Freezer':      {documentation:'1C4mCKM1DkXJwD-gVMf4spO8REjc6LDTC', works:'1vnbdMMISy38_SiJpVOuVoyC0UUEDaZaV', electrical:'1xqcwh5GvmZgSkCyffzQNINw4P_91W4Df', procedures:'1X14Fgcb8rESKIGQNXVo1bVT9cYn_f4s6'},
       'Cooler':       {documentation:'1tEemK1qcOlAn55CLOCWyUgS4PdASNbQ5', works:'1CUMUsoIRNl0PO8mQoK0-EmgHxMFuZLXI', electrical:'1dHbBL4-iVcekRBlTIr7jdUz17kL8MZUj', procedures:'1fcL8I_FZqD_JEmiuerWKyGN_8TJo09hU'},
       'Baggers':      {documentation:'1llq6U95hQc3NcGg1JDqOBKbmxJxsYcUR', works:'1HrGgPLFF4sUmc2FXsBlr_KNgdiEmnyUJ', electrical:'1J1W8STCRjfGfv4q91ZyxkyKiEUev_cAA', procedures:'1GewCaKsiOLEukax4ZIZTSP42k-WFR280'},
@@ -195,8 +129,7 @@
      For machines where you want a tabular sheet instead of Drive listing, set sheetId and sheetName. */
   const WORKS_SHEETS = {
     'Bakery 1': {
-      // Uses the sheet Petar shared (ID extracted from the URL) – sheet name "Work Histories"
-          // Uses the sheet Petar shared (ID extracted from the URL) – sheet tab "Work History without routines"
+      // Uses the sheet Petar shared (ID extracted from the URL) – sheet tab "Work History without routines"
       'Fritsch': {
         sheetId: '1j3KX2qGjFj9tOHWZLKY_xJMV70wBr5KQfZab0-TYw0k',
         sheetName: 'Work History without routines',
@@ -227,122 +160,7 @@
       }
     });
   }
-
-  function drawHome(){
-    crumbsSet([{label:'Home'}]);
-    const view=document.getElementById('view');
-    view.innerHTML='';
-    const wrap=document.createElement('div');
-    wrap.className='stack';
-    ['Bakery 1','Bakery 2','Bakery 3'].forEach(b=>{
-      const a=document.createElement('a');
-      a.className='tile';
-      a.href=`?bakery=${encodeURIComponent(b)}`;
-      a.innerHTML=`<h2>${b}</h2><p>Open</p>`;
-      wrap.appendChild(a);
-    });
-    view.appendChild(wrap);
-  }
-
-  function drawBakery(b){
-    crumbsSet([{label:'Home',to:{}},{label:b,to:{bakery:b}}]);
-    const view=document.getElementById('view');
-    view.innerHTML='';
-    const machines = MACHINES[b]||[];
-    if(!machines.length){ drawMachine(b,'—'); return; }
-    const wrap=document.createElement('div');
-    wrap.className='stack';
-    machines.forEach(m=>{
-      const a=document.createElement('a');
-      a.className='tile';
-      a.href=`?bakery=${encodeURIComponent(b)}&machine=${encodeURIComponent(m)}`;
-      a.innerHTML=`<h2>${m}</h2><p>Open</p>`;
-      wrap.appendChild(a);
-    });
-    view.appendChild(wrap);
-  }
-
-  function drawMachine(b,m){
-    crumbsSet([{label:'Home',to:{}},{label:b,to:{bakery:b}},{label:m,to:{bakery:b,machine:m}}]);
-    const view=document.getElementById('view');
-    view.innerHTML='';
-    const card=document.createElement('div');
-    card.className='card';
-    const h=document.createElement('h3'); h.textContent=`${b} › ${m}`; card.appendChild(h);
-    const grid=document.createElement('div'); grid.className='grid';
-    Object.entries(CATS).forEach(([k,meta])=>{
-      const a=document.createElement('a');
-      a.className=`tile square ${meta.color}`;
-      a.href=`?bakery=${encodeURIComponent(b)}&machine=${encodeURIComponent(m)}&cat=${encodeURIComponent(k)}`;
-      a.innerHTML=`<h2>${meta.title}</h2><p>${meta.desc}</p>`;
-      grid.appendChild(a);
-    });
-    card.appendChild(grid);
-    document.getElementById('view').appendChild(card);
-  }
-
-  /* === Inline preview helpers === */
-  const previewBackdrop = document.getElementById('previewBackdrop');
-  const previewFrame   = document.getElementById('previewFrame');
-  const previewTitleEl = document.getElementById('previewTitle');
-  const previewCloseBtn= document.getElementById('previewClose');
-  const previewDownload= document.getElementById('previewDownload');
-  const wmEl           = document.getElementById('wm');
-
-  function showPreview(){ previewBackdrop.style.display = 'block'; }
-  function hidePreview(){
-    previewBackdrop.style.display = 'none';
-    try{ if(previewFrame.dataset.blobUrl){ URL.revokeObjectURL(previewFrame.dataset.blobUrl); previewFrame.dataset.blobUrl=''; } }catch{}
-    previewFrame.src = 'about:blank';
-  }
-  previewBackdrop.addEventListener('click', (e)=>{ if(e.target === previewBackdrop) hidePreview(); });
-  previewCloseBtn.addEventListener('click', hidePreview);
-  window.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && previewBackdrop.style.display==='block') hidePreview(); });
-
-  function isPdf(mime){ return (mime||'').toLowerCase().includes('pdf') || /\.pdf$/i.test(mime||''); }
-  function publicDownloadUrl(fileId){ return `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media&key=${API_KEY}`; }
-
-  async function fetchPrivateBlob(fileId){
-    const r = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, { headers:{'Authorization':'Bearer '+accessToken} });
-    if(!r.ok) throw new Error('Fetch failed '+r.status);
-    return await r.blob();
-  }
-
-  async function openInlinePreview(f,isAdmin){
-    try{
-      previewTitleEl.textContent = f.name || 'Preview';
-      previewDownload.href = isAdmin ? `https://www.googleapis.com/drive/v3/files/${f.id}?alt=media` : publicDownloadUrl(f.id);
-      const isImage = (f.mimeType||'').startsWith('image/');
-      const previewUrl = `https://drive.google.com/file/d/${f.id}/preview`;
-      // Optional watermark on (toggle via URL ?wm=1)
-      const showWm = new URLSearchParams(location.search).get('wm')==='1';
-      wmEl.style.display = showWm ? 'flex' : 'none';
-
-      if(isPdf(f.mimeType) || /\.pdf$/i.test(f.name||'') || isImage){
-        if(isAdmin){
-          try{
-            const blob = await fetchPrivateBlob(f.id);
-            const url = URL.createObjectURL(blob);
-            previewFrame.dataset.blobUrl = url;
-            previewFrame.src = url;
-            showPreview();
-            return;
-          }catch(e){ console.warn('Blob preview failed, fallback to Drive preview'); }
-        }
-        previewFrame.src = previewUrl; showPreview();
-      } else {
-        window.open(f.webViewLink || `https://drive.google.com/file/d/${f.id}/view`, '_blank');
-      }
-    }catch(e){
-      alert('Preview failed: '+(e.message||String(e)));
-    }
-  }
-
-  /* ===== Drive integration ===== */
-  let accessToken=null,gapiReady=false;
-  async function ensureGapi(){
-    if(gapiReady) return;
-    await new Promise(r=>gapi.load('client',r));
+@@ -324,152 +346,380 @@
     await gapi.client.init({apiKey:API_KEY,discoveryDocs:['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest']});
     gapiReady=true;
   }
@@ -368,7 +186,7 @@
       const res = await fetch(url);
       if(res.ok){
         const text = await res.text();
-       const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+        const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
         const data = JSON.parse(jsonText);
         const tableData = data.table || {};
         let rows = (tableData.rows||[]).map(r => (r.c||[]).map(c => (c ? (c.f ?? c.v ?? '') : '')));
@@ -415,7 +233,7 @@
         }
       }
       if (field.length || row.length) { row.push(field); rows.push(row); }
-     const headers = (rows.shift() || []).map(v => (v ?? '').toString().trim());
+      const headers = (rows.shift() || []).map(v => (v ?? '').toString().trim());
       return { headers, rows };
     }
     throw new Error('No sheetName or gid configured.');
@@ -423,6 +241,7 @@
 
   function renderWorksTable(container, table, options={}){
     container.innerHTML = '';
+
     const root = document.createElement('div'); root.className='works-table';
     container.appendChild(root);
 
@@ -444,10 +263,9 @@
     const tableEl = document.createElement('table'); tableEl.className='works-table__table'; scroll.appendChild(tableEl);
 
     const thead = document.createElement('thead'); const headerRow = document.createElement('tr'); thead.appendChild(headerRow); tableEl.appendChild(thead);
-    thead.appendChild(trh); tableEl.appendChild(thead);
-
     const tbody = document.createElement('tbody'); tableEl.appendChild(tbody);
-   const indicators = [];
+
+    const indicators = [];
     const headers = table.headers.length ? table.headers : table.rows[0]?.map((_, idx) => `Column ${idx+1}`) || [];
     headers.forEach((label, idx) => {
       const th = document.createElement('th'); th.tabIndex = 0; th.setAttribute('aria-sort','none');
@@ -574,10 +392,10 @@
     function updateMeta(){ meta.textContent = formatCount(); }
 
     function renderBody(){
-     tbody.innerHTML='';
+      tbody.innerHTML='';
       if(!currentRows.length){
         const tr = document.createElement('tr');
-      const td = document.createElement('td'); td.colSpan = headers.length || 1; td.className='works-table__empty'; td.textContent='No matching records.';
+        const td = document.createElement('td'); td.colSpan = headers.length || 1; td.className='works-table__empty'; td.textContent='No matching records.';
         tr.appendChild(td); tbody.appendChild(tr);
       } else {
         currentRows.forEach(row => {
@@ -606,7 +424,7 @@
       });
     }
 
-   function updateSortIndicators(){
+    function updateSortIndicators(){
       indicators.forEach((entry, idx) => {
         const { th, indicator } = entry;
         if(sortCol === idx){
@@ -632,7 +450,7 @@
       updateSortIndicators();
     }
 
-    sfunction sortBy(colIdx){
+    function sortBy(colIdx){
       if(sortCol === colIdx){
         sortDir = sortDir === 'asc' ? 'desc' : 'asc';
       } else {
@@ -691,7 +509,7 @@
     }
     try{
       container.innerHTML = '<div class="small">Loading Work History…</div>';
-     const table = await fetchSheetTable(entry.sheetId, entry.sheetName||'Sheet1', entry.gid);
+      const table = await fetchSheetTable(entry.sheetId, entry.sheetName||'Sheet1', entry.gid);
       renderWorksTable(container, table, {
         isAdmin: isAdminSignedIn(),
         sheetEntry: entry,
@@ -723,8 +541,7 @@
     const card=document.createElement('div'); card.className='card';
     const h=document.createElement('h3'); h.textContent=`${b} › ${m} › ${cat.title}`; card.appendChild(h);
 
-    const fid = folderIdFor(b,m,catKey);
-    const hint = document.createElement('div'); hint.className='small'; card.appendChild(hint);
+@@ -478,51 +728,52 @@
     function refreshHint(){
       if(!fid){ hint.style.display = ''; hint.innerHTML = '⚠️ Set Drive folder ID in <code>FOLDERS</code>.'; }
       else if (accessToken) { hint.style.display = ''; hint.innerHTML = `Folder ID: <code>${escapeHtml(fid)}</code>`; }
@@ -750,7 +567,7 @@
     if (catKey === 'works') {
       const sheetEntry = WORKS_SHEETS?.[b]?.[m];
       if (sheetEntry && sheetEntry.sheetId) {
-       bar.style.display = 'none';
+        bar.style.display = 'none';
         file.style.display = 'none'; up.style.display = 'none'; refresh.style.display = 'none'; adminBtn.style.display = 'none'; search.style.display='none';
         drawWorksSheetView(b, m, list).catch(e => { list.innerHTML = `<div class="small">Failed to load Work History: ${escapeHtml(e.message||String(e))}</div>`; });
         return; // do not render Drive listing when Sheet view is used
