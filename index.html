@@ -78,8 +78,9 @@
   .data tbody tr:nth-child(odd){background:var(--zebra)}
   .data tbody tr:hover{background:var(--hover)}
   .data .cell-mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9em;color:#334155}
-  .data td, .data th { overflow-wrap:anywhere;word-break:break-word; }
-  .data td.wide, .data th.wide {min width:420px;}
+  /* Wide text columns for descriptions */
+  .data td, .data th { overflow-wrap:anywhere; word-break:break-word; }
+  .data td.wide, .data th.wide { min-width:420px; }
 
   footer{height:1px}
 </style>
@@ -139,7 +140,7 @@
   <script src="https://apis.google.com/js/api.js" async defer></script>
 
   <script>
-  /******** QUICK SETUP ********/
+  /******** CONFIG ********/
   const CLIENT_ID = '937032004801-nfma3pp3fkkck4mfk094imqgmvduj7ih.apps.googleusercontent.com';
   const API_KEY   = 'AIzaSyDnEsld28xzG1lQROwBO_ImDq2SxX4kcg8';
   const SCOPES    = 'https://www.googleapis.com/auth/drive';
@@ -174,7 +175,7 @@
       'MIB':          {documentation:'1twize6Omq1WUxt631UIlvXoWG6Kmy-XS', works:'1gbII6qemYbyQVSjGivbn8_Ku6cEFX1pR', electrical:'1c4vr73nrDie8sGfGz2VqvMMYhGh1z-Fn', procedures:'1NI0RK4Mp6zeyJ0R1PFfam_auoHJAMRfs'},
       'Freezer':      {documentation:'1C4mCKM1DkXJwD-gVMf4spO8REjc6LDTC', works:'1vnbdMMISy38_SiJpVOuVoyC0UUEDaZaV', electrical:'1xqcwh5GvmZgSkCyffzQNINw4P_91W4Df', procedures:'1X14Fgcb8rESKIGQNXVo1bVT9cYn_f4s6'},
       'Cooler':       {documentation:'1tEemK1qcOlAn55CLOCWyUgS4PdASNbQ5', works:'1CUMUsoIRNl0PO8mQoK0-EmgHxMFuZLXI', electrical:'1dHbBL4-iVcekRBlTIr7jdUz17kL8MZUj', procedures:'1fcL8I_FZqD_JEmiuerWKyGN_8TJo09hU'},
-      'Baggers':      {documentation:'1llq6U95hQc3NcGg1JDqOBKbmxJxsYcUR', works:'1HrGgPLFF4sUmc2FXsBlr_KNgdiEmnyUJ', electrical:'1J1W8STCRjfGfv4q91ZyxkyKiEUev_cAA', procedures:'1GewCaKsiOLEukax4ZIZTSP42k-WFR280'},
+      'Baggers':      {documentation:'1llq6U95hQc3NcGg1JDqOBKbmxJxsYcUR', works:'1HrGgPLFF4sUmc2FXsBlr_KNgdiEmnyUJ', electrical:'1J1W8STCRjfGfv4q91ZyxkyKiEUev_cAA', procedures:'1GewCaKsiOLEukax4ZIZTSP42kWFR280'},
       'AHU':          {documentation:'1QMKYSOQ-N0LVANk8MZNiB07DTKI-QC7U', works:'1tSXor0e_YtcabRFabUO_AOhEMjzTttuh', electrical:'1m3CYpvbWyqJBX022oiOwJNcBayqOFF1a', procedures:'1PcPbWgBbTDnPZAidlPI-_T4-fpJP2q0o'}
     },
     'Bakery 3': {
@@ -230,9 +231,8 @@
     crumbsSet([{label:'Home'}]);
     const view=document.getElementById('view');
     view.innerHTML='';
-    const wrap=document.createElement('div');
-    wrap.className='stack';
-    ['Bakery 1','Bakery 2','Bakery 3'].forEach(b=>{
+    const wrap=document.createElement('div'); wrap.className='stack';
+    Object.keys(MACHINES).forEach(b=>{
       const a=document.createElement('a');
       a.className='tile';
       a.href=`?bakery=${encodeURIComponent(b)}`;
@@ -244,12 +244,10 @@
 
   function drawBakery(b){
     crumbsSet([{label:'Home',to:{}},{label:b,to:{bakery:b}}]);
-    const view=document.getElementById('view');
-    view.innerHTML='';
+    const view=document.getElementById('view'); view.innerHTML='';
     const machines = MACHINES[b]||[];
     if(!machines.length){ drawMachine(b,'—'); return; }
-    const wrap=document.createElement('div');
-    wrap.className='stack';
+    const wrap=document.createElement('div'); wrap.className='stack';
     machines.forEach(m=>{
       const a=document.createElement('a');
       a.className='tile';
@@ -262,10 +260,8 @@
 
   function drawMachine(b,m){
     crumbsSet([{label:'Home',to:{}},{label:b,to:{bakery:b}},{label:m,to:{bakery:b,machine:m}}]);
-    const view=document.getElementById('view');
-    view.innerHTML='';
-    const card=document.createElement('div');
-    card.className='card';
+    const view=document.getElementById('view'); view.innerHTML='';
+    const card=document.createElement('div'); card.className='card';
     const h=document.createElement('h3'); h.textContent=`${b} › ${m}`; card.appendChild(h);
     const grid=document.createElement('div'); grid.className='grid';
     Object.entries(CATS).forEach(([k,meta])=>{
@@ -335,7 +331,7 @@
     }
   }
 
-  /* ===== Drive integration ===== */
+  /* ===== Drive & Auth ===== */
   let accessToken=null,gapiReady=false;
   async function ensureGapi(){
     if(gapiReady) return;
@@ -358,27 +354,26 @@
   function isAdminSignedIn(){ return !!accessToken; }
   function folderIdFor(b,m,cat){ return FOLDERS?.[b]?.[m]?.[cat] || null; }
 
-  /* ===== WORK HISTORY VIEWER (Google Sheets) ===== */
+  /* ===== SHEET HELPERS ===== */
+  // Robust GViz/CSV fetcher with header fallback
   async function fetchSheetTable(sheetId, sheetName, gid){
-    // 1) Try GViz JSON – robust trim + XSSI guard removal
+    // Try GViz JSON first
     if (sheetName) {
       const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
       try {
         const res = await fetch(url);
         if (!res.ok) throw new Error('GViz JSON HTTP ' + res.status);
         let text = await res.text();
-        text = text.replace(/^\)\]\}'\s*/, '').replace(/^\uFEFF/, '');
-        const start = text.indexOf('{');
-        const end   = text.lastIndexOf('}');
+        text = text.replace(/^\)\\]\\}'\\s*/, '').replace(/^\uFEFF/, '');
+        const start = text.indexOf('{'), end = text.lastIndexOf('}');
         if (start === -1 || end === -1 || end <= start) throw new Error('Invalid GViz JSON payload');
-        const jsonText = text.substring(start, end + 1);
-        const data = JSON.parse(jsonText);
-        // Build headers/rows from GViz table
-        let headers = (data.table.cols||[]).map(c => (c && (c.label || c.id)) || '');
-        let rows = (data.table.rows||[]).map(r => (r.c||[]).map(c => (c ? (c.f || c.v || '') : '')));
+        const data = JSON.parse(text.substring(start, end + 1));
 
-        // If headers are empty or look like A,B,C..., use first data row as header
-        const looksLikeLetters = headers.length && headers.every((h,i)=> !h || /^[A-Z]+$/.test(String(h)));
+        let headers = (data.table.cols||[]).map(c => (c && (c.label || c.id)) || '');
+        let rows = (data.table.rows||[]).map(r => (r.c||[]).map(c => (c ? (c.f ?? c.v ?? '') : '')));
+
+        // If headers look like A,B,C... or empty, use first row as headers
+        const looksLikeLetters = headers.length && headers.every(h => !h || /^[A-Z]+$/.test(String(h)));
         const allEmpty = headers.every(h => !h || String(h).trim()==='');
         if ((allEmpty || looksLikeLetters) && rows.length){
           headers = rows[0].map(v => String(v||'').trim());
@@ -386,300 +381,261 @@
         }
         return { headers, rows };
       } catch (e) {
-        // 2) GViz CSV fallback (sheetName-based)
+        // GViz CSV fallback
         try {
           const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`;
           const rCsv = await fetch(csvUrl);
           if (!rCsv.ok) throw new Error('GViz CSV HTTP ' + rCsv.status);
-          const tCsv = await rCsv.text();
-          return parseCsvTable(tCsv);
+          return parseCsvTable(await rCsv.text());
         } catch (e2) {
-          // 3) Traditional CSV export by gid (if provided)
+          // Classic CSV by gid
           if (gid) {
             const urlCsv = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&id=${sheetId}&gid=${gid}`;
             const rCsv2 = await fetch(urlCsv);
             if (!rCsv2.ok) throw new Error('CSV export HTTP ' + rCsv2.status);
-            const tCsv2 = await rCsv2.text();
-            return parseCsvTable(tCsv2);
+            return parseCsvTable(await rCsv2.text());
           }
           throw e2;
         }
       }
     }
-    // If no sheetName, use gid CSV export
+    // If no sheetName, use gid CSV
     if (gid) {
       const urlCsv = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&id=${sheetId}&gid=${gid}`;
       const rCsv = await fetch(urlCsv);
       if (!rCsv.ok) throw new Error('CSV export HTTP ' + rCsv.status);
-      const tCsv = await rCsv.text();
-      return parseCsvTable(tCsv);
+      return parseCsvTable(await rCsv.text());
     }
     throw new Error('No sheetName or gid configured.');
   }
 
-function parseDateSmart(v){
-  if (v == null) return NaN;
-  // Ako dođe kao broj (Google Sheets/Excel serial)
-  if (typeof v === 'number' && isFinite(v)) {
-    // Google Sheets/Excel epoch: 1899-12-30
-    // 25569 = 1970-01-01; 1 dan = 86400s
-    const ms = (v - 25569) * 86400 * 1000;
-    return isNaN(ms) ? NaN : ms;
+  function parseCsvTable(text){
+    const rows = [];
+    let row = [], inQuotes = false, field = '';
+    for (let i=0; i<text.length; i++){
+      const ch = text[i], next = text[i+1];
+      if (inQuotes){
+        if (ch === '"' && next === '"'){ field += '"'; i++; }
+        else if (ch === '"'){ inQuotes = false; }
+        else { field += ch; }
+      } else {
+        if (ch === '"'){ inQuotes = true; }
+        else if (ch === ','){ row.push(field); field=''; }
+        else if (ch === '\n'){ row.push(field); rows.push(row); row=[]; field=''; }
+        else if (ch === '\r'){ /* ignore */ }
+        else { field += ch; }
+      }
+    }
+    if (field.length || row.length) { row.push(field); rows.push(row); }
+    const headers = (rows.shift() || []).map(h => String(h||'').trim());
+    return { headers, rows };
   }
-  const t = String(v).trim();
-  if (!t) return NaN;
 
-  // Ako je numerički string (npr. "45265.5")
-  if (/^\d+(\.\d+)?$/.test(t)) {
-    const n = Number(t);
-    if (isFinite(n)) {
-      const ms = (n - 25569) * 86400 * 1000;
+  // Parse datumski stringovi + Excel/Sheets seriali
+  function parseDateSmart(v){
+    if (v == null) return NaN;
+    if (typeof v === 'number' && isFinite(v)) {
+      const ms = (v - 25569) * 86400 * 1000; // Excel epoch
       return isNaN(ms) ? NaN : ms;
     }
-  }
+    const t = String(v).trim();
+    if (!t) return NaN;
 
-  // Brzi pokušaj (hvata ISO i mnoge varijante)
-  let d = Date.parse(t);
-  if (!Number.isNaN(d)) return d;
-
-  // dd/mm/yyyy | dd.mm.yyyy | dd-mm-yyyy (i dvocifrene godine) + opcionalno vrijeme
-  let m = t.match(/^(\d{1,2})[\/\.\-\s](\d{1,2})[\/\.\-\s](\d{2,4})(?:[ T](\d{1,2}):(\d{2})(?::(\d{2}))?)?$/);
-  if (m){
-    let dd = +m[1], mm = +m[2], yy = +m[3];
-    let hh = +(m[4] ?? 0), mi = +(m[5] ?? 0), ss = +(m[6] ?? 0);
-    if (yy < 100) yy += (yy >= 70 ? 1900 : 2000); // 70–99 -> 19xx, 00–69 -> 20xx
-    const dt = new Date(yy, mm-1, dd, hh, mi, ss);
-    return isNaN(dt.getTime()) ? NaN : dt.getTime();
-  }
-
-  // yyyy/mm/dd | yyyy.mm.dd | yyyy-mm-dd (+ opcionalno vrijeme)
-  m = t.match(/^(\d{4})[\/\.\-\s](\d{1,2})[\/\.\-\s](\d{1,2})(?:[ T](\d{1,2}):(\d{2})(?::(\d{2}))?)?$/);
-  if (m){
-    const yy = +m[1], mm = +m[2], dd = +m[3];
-    let hh = +(m[4] ?? 0), mi = +(m[5] ?? 0), ss = +(m[6] ?? 0);
-    const dt = new Date(yy, mm-1, dd, hh, mi, ss);
-    return isNaN(dt.getTime()) ? NaN : dt.getTime();
-  }
-
-  return NaN;
-}
-
-
-  // Infer column types (date/number/text) for better sort
-  function inferTypes(headers, rows){
-   const types = table.headers.map((_, col) => {
-  let isDate=true, isNum=true;
-  for (let i=0;i<Math.min(rows.length, 25);i++){
-    const v = rows[i][col];
-    if (v==null || v==='') continue;
-    const n = Number(v);
-    if (!isFinite(n)) isNum=false;
-    const d = parseDateSmart(v);            // ← OVO je bitno
-    if (isNaN(d)) isDate=false;
-    if (!isDate && !isNum) break;
-  }
-  return isDate ? 'date' : (isNum ? 'number' : 'text');
-});
-    return types;
-  }
-function parseDateSmart(v){
-  if (v == null) return NaN;
-  const t = String(v).trim();
-  if (!t) return NaN;
-
-  // 1) Brzi pokušaj: Date.parse (hvata ISO, US, itd.)
-  let d = Date.parse(t);
-  if (!Number.isNaN(d)) return d;
-
-  // 2) dd/mm/yyyy ili dd.mm.yyyy ili dd-mm-yyyy (i dvocifrene godine)
-  let m = t.match(/^(\d{1,2})[\/\.\-\s](\d{1,2})[\/\.\-\s](\d{2,4})$/);
-  if (m){
-    let dd = +m[1], mm = +m[2], yy = +m[3];
-    if (yy < 100) yy += (yy >= 70 ? 1900 : 2000); // 70–99 -> 19xx, 00–69 -> 20xx
-    const dt = new Date(yy, mm-1, dd);
-    return isNaN(dt.getTime()) ? NaN : dt.getTime();
-  }
-
-  // 3) yyyy/mm/dd ili yyyy.mm.dd ili yyyy-mm-dd
-  m = t.match(/^(\d{4})[\/\.\-\s](\d{1,2})[\/\.\-\s](\d{1,2})$/);
-  if (m){
-    const yy = +m[1], mm = +m[2], dd = +m[3];
-    const dt = new Date(yy, mm-1, dd);
-    return isNaN(dt.getTime()) ? NaN : dt.getTime();
-  }
-
-  return NaN;
-}
-  function renderWorksTable(container, table){
-  container.innerHTML = '';
-
-  // — Toolbar
-  const bar = document.createElement('div'); bar.className='toolbar';
-  const search = document.createElement('input'); search.type='search'; search.placeholder='Search…';
-
-  const adminBtns = document.createElement('div');
-  adminBtns.style.display='flex'; adminBtns.style.gap='8px'; adminBtns.style.marginLeft='auto';
-  const dlBtn = document.createElement('button'); dlBtn.className='btn ghost badge'; dlBtn.textContent='Download CSV';
-  const openGs = document.createElement('button'); openGs.className='btn ghost badge'; openGs.textContent='Open in Google Sheets (Admin)';
-  adminBtns.append(dlBtn, openGs);
-
-  // prikaži admin gumbe samo kad si prijavljen
-  adminBtns.style.display = isAdminSignedIn() ? 'flex' : 'none';
-
-  bar.append(search, adminBtns);
-  container.appendChild(bar);
-
-  // — Tablica
-  const wrap = document.createElement('div'); wrap.className='table-wrap';
-  const tableEl = document.createElement('table'); tableEl.className='data';
-  wrap.appendChild(tableEl); container.appendChild(wrap);
-
-  const thead = document.createElement('thead');
-  const trh = document.createElement('tr');
-
-  // detektiraj široke stupce po nazivima
-  const wideIdx = new Set();
-  table.headers.forEach((h,i)=>{
-    if (/job\s*description/i.test(h) || /action\s*taken/i.test(h)) wideIdx.add(i);
-  });
-
-  table.headers.forEach((h, idx) => {
-    const th = document.createElement('th');
-    th.innerHTML = `<span class="hint">${escapeHtml(h||`Col ${idx+1}`)}</span><span class="sort">⇅</span>`;
-    if (wideIdx.has(idx)) th.classList.add('wide');
-    th.addEventListener('click', () => sortBy(idx));
-    trh.appendChild(th);
-  });
-  thead.appendChild(trh);
-  tableEl.appendChild(thead);
-
-  const tbody = document.createElement('tbody');
-  tableEl.appendChild(tbody);
-
-  // — Tipovi kolona + stanje
-  let currentRows = table.rows.slice();
-
-  // Pametna detekcija tipa: date/number/text (koristi parseDateSmart)
-  const types = table.headers.map((_, col) => {
-    let isDate=true, isNum=true;
-    for (let i=0;i<Math.min(currentRows.length, 25);i++){
-      const v = currentRows[i][col];
-      if (v==null || v==='') continue;
-      const n = Number(v);
-      if (!isFinite(n)) isNum=false;
-      const d = parseDateSmart(v);
-      if (isNaN(d)) isDate=false;
-      if (!isDate && !isNum) break;
-    }
-    return isDate ? 'date' : (isNum ? 'number' : 'text');
-  });
-
-  let sortCol = -1, sortDir = 1; // 1 asc, -1 desc
-
-  function renderBody(){
-    const q = (search.value||'').toLowerCase();
-    tbody.innerHTML = '';
-    currentRows.forEach(r => {
-      if(q){
-        const hit = r.some(v => String(v||'').toLowerCase().includes(q));
-        if(!hit) return;
+    if (/^\d+(\.\d+)?$/.test(t)) {
+      const n = Number(t);
+      if (isFinite(n)) {
+        const ms = (n - 25569) * 86400 * 1000;
+        return isNaN(ms) ? NaN : ms;
       }
-      const tr = document.createElement('tr');
-      r.forEach((v, i)=>{
-        const td = document.createElement('td');
-        const val = v==null ? '' : String(v);
-        if (wideIdx.has(i)) td.classList.add('wide');
-        if (types[i]==='number') td.classList.add('cell-mono');
-        td.textContent = val;
-        tr.appendChild(td);
-      });
-      tbody.appendChild(tr);
-    });
-  }
-
-  function cmp(a,b,col){
-    const t = types[col];
-    const va = a[col], vb = b[col];
-  if (t==='date'){
-  const na = parseDateSmart(va);
-  const nb = parseDateSmart(vb);
-  // Prazne/pogrešne na kraj:
-  if (isNaN(na) && isNaN(nb)) return 0;
-  if (isNaN(na)) return 1;    // a prazno → nakon b
-  if (isNaN(nb)) return -1;   // b prazno → nakon a
-  return na - nb;
-} else if (t==='number'){
-      const na = Number(va); const nb = Number(vb);
-      if (isNaN(na) && isNaN(nb)) return 0;
-      if (isNaN(na)) return -1;
-      if (isNaN(nb)) return 1;
-      return na - nb;
-    } else {
-      const sa = String(va||'').toLowerCase();
-      const sb = String(vb||'').toLowerCase();
-      if (sa<sb) return -1;
-      if (sa>sb) return 1;
-      return 0;
     }
+
+    let d = Date.parse(t);
+    if (!Number.isNaN(d)) return d;
+
+    // dd/mm/yyyy (ili . - space) + opcionalno vrijeme
+    let m = t.match(/^(\d{1,2})[\/\.\-\s](\d{1,2})[\/\.\-\s](\d{2,4})(?:[ T](\d{1,2}):(\d{2})(?::(\d{2}))?)?$/);
+    if (m){
+      let dd = +m[1], mm = +m[2], yy = +m[3];
+      let hh = +(m[4] ?? 0), mi = +(m[5] ?? 0), ss = +(m[6] ?? 0);
+      if (yy < 100) yy += (yy >= 70 ? 1900 : 2000);
+      const dt = new Date(yy, mm-1, dd, hh, mi, ss);
+      return isNaN(dt.getTime()) ? NaN : dt.getTime();
+    }
+
+    // yyyy-mm-dd (ili / . space) + opcionalno vrijeme
+    m = t.match(/^(\d{4})[\/\.\-\s](\d{1,2})[\/\.\-\s](\d{1,2})(?:[ T](\d{1,2}):(\d{2})(?::(\d{2}))?)?$/);
+    if (m){
+      const yy = +m[1], mm = +m[2], dd = +m[3];
+      let hh = +(m[4] ?? 0), mi = +(m[5] ?? 0), ss = +(m[6] ?? 0);
+      const dt = new Date(yy, mm-1, dd, hh, mi, ss);
+      return isNaN(dt.getTime()) ? NaN : dt.getTime();
+    }
+
+    return NaN;
   }
 
-  function updateSortIndicators(){
-    const ths = thead.querySelectorAll('th .sort');
-    ths.forEach((el, i)=>{
-      el.textContent = (i===sortCol) ? (sortDir===1 ? '↑' : '↓') : '⇅';
-      el.style.opacity = (i===sortCol) ? '1' : '.7';
+  /* ===== Work History renderer ===== */
+  function renderWorksTable(container, table, sheetId){
+    container.innerHTML = '';
+
+    // Toolbar
+    const bar = document.createElement('div'); bar.className='toolbar';
+    const search = document.createElement('input'); search.type='search'; search.placeholder='Search…';
+    const adminBtns = document.createElement('div'); adminBtns.style.display='flex'; adminBtns.style.gap='8px'; adminBtns.style.marginLeft='auto';
+    const dlBtn = document.createElement('button'); dlBtn.className='btn ghost badge'; dlBtn.textContent='Download CSV';
+    const openGs = document.createElement('button'); openGs.className='btn ghost badge'; openGs.textContent='Open in Google Sheets (Admin)';
+    adminBtns.append(dlBtn, openGs);
+    adminBtns.style.display = isAdminSignedIn() ? 'flex' : 'none';
+    bar.append(search, adminBtns);
+    container.appendChild(bar);
+
+    // Table shell
+    const wrap = document.createElement('div'); wrap.className='table-wrap';
+    const tableEl = document.createElement('table'); tableEl.className='data';
+    wrap.appendChild(tableEl); container.appendChild(wrap);
+
+    const thead = document.createElement('thead');
+    const trh = document.createElement('tr');
+
+    // Wide columns detection
+    const wideIdx = new Set();
+    table.headers.forEach((h,i)=>{
+      if (/job\s*description/i.test(h) || /action\s*taken/i.test(h)) wideIdx.add(i);
     });
-  }
 
-  function sortBy(colIdx){
-    if(sortCol === colIdx){ sortDir *= -1; } else { sortCol = colIdx; sortDir = 1; }
-    currentRows.sort((a,b)=> sortDir * cmp(a,b,colIdx) );
+    table.headers.forEach((h, idx) => {
+      const th = document.createElement('th');
+      th.innerHTML = `<span class="hint">${escapeHtml(h||`Col ${idx+1}`)}</span><span class="sort">⇅</span>`;
+      if (wideIdx.has(idx)) th.classList.add('wide');
+      th.addEventListener('click', () => sortBy(idx));
+      trh.appendChild(th);
+    });
+    thead.appendChild(trh);
+    tableEl.appendChild(thead);
+
+    const tbody = document.createElement('tbody');
+    tableEl.appendChild(tbody);
+
+    // State
+    let currentRows = table.rows.slice();
+
+    // Types inference (date/number/text)
+    const types = table.headers.map((_, col) => {
+      let isDate=true, isNum=true;
+      for (let i=0;i<Math.min(currentRows.length, 30);i++){
+        const v = currentRows[i][col];
+        if (v==null || v==='') continue;
+        const n = Number(v);
+        if (!isFinite(n)) isNum=false;
+        const d = parseDateSmart(v);
+        if (isNaN(d)) isDate=false;
+        if (!isDate && !isNum) break;
+      }
+      return isDate ? 'date' : (isNum ? 'number' : 'text');
+    });
+
+    let sortCol = -1, sortDir = 1; // 1 asc, -1 desc
+
+    function cmp(a,b,col){
+      const t = types[col];
+      const va = a[col], vb = b[col];
+      if (t==='date'){
+        const na = parseDateSmart(va);
+        const nb = parseDateSmart(vb);
+        // prazna idu na kraj
+        if (isNaN(na) && isNaN(nb)) return 0;
+        if (isNaN(na)) return 1;
+        if (isNaN(nb)) return -1;
+        return na - nb;
+      } else if (t==='number'){
+        const na = Number(va); const nb = Number(vb);
+        if (isNaN(na) && isNaN(nb)) return 0;
+        if (isNaN(na)) return 1;
+        if (isNaN(nb)) return -1;
+        return na - nb;
+      } else {
+        const sa = String(va||'').toLowerCase();
+        const sb = String(vb||'').toLowerCase();
+        if (sa<sb) return -1;
+        if (sa>sb) return 1;
+        return 0;
+      }
+    }
+
+    function updateSortIndicators(){
+      const ths = thead.querySelectorAll('th .sort');
+      ths.forEach((el, i)=>{
+        el.textContent = (i===sortCol) ? (sortDir===1 ? '↑' : '↓') : '⇅';
+        el.style.opacity = (i===sortCol) ? '1' : '.7';
+      });
+    }
+
+    function renderBody(){
+      const q = (search.value||'').toLowerCase();
+      tbody.innerHTML = '';
+      currentRows.forEach(r => {
+        if(q){
+          const hit = r.some(v => String(v||'').toLowerCase().includes(q));
+          if(!hit) return;
+        }
+        const tr = document.createElement('tr');
+        r.forEach((v, i)=>{
+          const td = document.createElement('td');
+          const val = v==null ? '' : String(v);
+          if (wideIdx.has(i)) td.classList.add('wide');
+          if (types[i]==='number') td.classList.add('cell-mono');
+          td.textContent = val;
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    function sortBy(colIdx){
+      if(sortCol === colIdx){ sortDir *= -1; } else { sortCol = colIdx; sortDir = 1; }
+      currentRows.sort((a,b)=> sortDir * cmp(a,b,colIdx) );
+      updateSortIndicators();
+      renderBody();
+    }
+
+    // Default sort: “Completed On” ASC (najstarije → najnovije)
+    const completedCol = table.headers.findIndex(h =>
+      h && /^(completed\s*on|completed|completion\s*date|date\s*completed)$/i.test(String(h).trim())
+    );
+    if (completedCol !== -1){
+      sortCol = completedCol;
+      sortDir = 1;
+      currentRows.sort((a,b)=> sortDir * cmp(a,b,completedCol) );
+    }
+
+    // Render first view
     updateSortIndicators();
     renderBody();
+
+    // Live search
+    search.addEventListener('input', renderBody);
+
+    // Admin buttons
+    dlBtn.onclick = ()=>{
+      const esc = (s)=>('"'+String(s??'').replace(/"/g,'""')+'"');
+      const lines = [ table.headers.map(esc).join(','), ...currentRows.map(row=>row.map(esc).join(',')) ].join('\r\n');
+      const blob = new Blob([lines], {type:'text/csv'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href=url; a.download='work_history.csv'; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url), 5000);
+    };
+    openGs.onclick = async ()=>{
+      try{
+        if(!isAdminSignedIn()) await ensureAuth();
+        if (sheetId) window.open(`https://docs.google.com/spreadsheets/d/${sheetId}/edit`, '_blank');
+        else alert('Sheet ID not found');
+      }catch(e){ alert('Admin sign-in failed: ' + (e.message || String(e))); }
+    };
+
+    // If admin signs in later, reveal buttons
+    const reveal = ()=>{ adminBtns.style.display = isAdminSignedIn() ? 'flex' : 'none'; };
+    setInterval(reveal, 800);
   }
-
-  // — Admin akcije
-  dlBtn.onclick = ()=>{
-    const esc = (s)=>('"'+String(s??'').replace(/"/g,'""')+'"');
-    const lines = [ table.headers.map(esc).join(','), ...currentRows.map(row=>row.map(esc).join(',')) ].join('\r\n');
-    const blob = new Blob([lines], {type:'text/csv'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href=url; a.download='work_history.csv'; document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(()=>URL.revokeObjectURL(url), 5000);
-  };
-  openGs.onclick = async ()=>{
-    try{
-      if(!isAdminSignedIn()) await ensureAuth();
-      // otvori baš onaj sheet koji je prikazan (pronađi ga iz WORKS_SHEETS preko breadcrumbs bi moglo, ali
-      // pošto zoveš ovo iz Work History, koristimo prvi zapis koji je aktivan u drawWorksSheetView)
-      // Ako ti treba dinamički “current”, možeš u drawWorksSheetView spremiti lastSheetId u window.
-      const sid = (window.lastSheetId) || (WORKS_SHEETS['Bakery 1'] && WORKS_SHEETS['Bakery 1']['Fritsch'] && WORKS_SHEETS['Bakery 1']['Fritsch'].sheetId);
-      if (!sid) { alert('Sheet ID not found'); return; }
-      window.open(`https://docs.google.com/spreadsheets/d/${sid}/edit`, '_blank');
-    }catch(e){
-      alert('Admin sign-in failed: ' + (e.message || String(e)));
-    }
-  };
-
-  // — Default: sortiraj po "Completed On" od najstarijeg → najnovijeg
-  const completedCol = table.headers.findIndex(h => /completed\s*on/i.test(h));
-  if (completedCol !== -1){
-    sortCol = completedCol;
-    sortDir = 1; // ASC = najstarije → najnovije
-    currentRows.sort((a,b)=> sortDir * cmp(a,b,completedCol) );
-  }
-
-  // — Render
-  updateSortIndicators();
-  renderBody();
-
-  // — Live search
-  search.addEventListener('input', renderBody);
-
-  // — Ako se naknadno prijavi admin, pokaži gumbe
-  const reveal = ()=>{ adminBtns.style.display = isAdminSignedIn() ? 'flex' : 'none'; };
-  setInterval(reveal, 800);
-}
 
   async function drawWorksSheetView(bakery, machine, container){
     const entry = WORKS_SHEETS?.[bakery]?.[machine];
@@ -690,7 +646,7 @@ function parseDateSmart(v){
     try{
       container.innerHTML = '<div class="small">Loading Work History…</div>';
       const table = await fetchSheetTable(entry.sheetId, entry.sheetName||'Sheet1', entry.gid);
-      renderWorksTable(container, table);
+      renderWorksTable(container, table, entry.sheetId);
       return true;
     }catch(e){
       container.innerHTML = `<div class="small">Failed to load Work History: ${escapeHtml(e.message||String(e))}</div>`;
@@ -698,7 +654,7 @@ function parseDateSmart(v){
     }
   }
 
-  /* ===== Category view ===== */
+  /* ===== CATEGORY VIEW ===== */
   function drawCategory(b,m,catKey){
     const cat=CATS[catKey];
     if(!cat){ go({bakery:b,machine:m}); return; }
@@ -710,9 +666,7 @@ function parseDateSmart(v){
       {label:cat.title,to:{bakery:b,machine:m,cat:catKey}}
     ]);
 
-    const view=document.getElementById('view');
-    view.innerHTML='';
-
+    const view=document.getElementById('view'); view.innerHTML='';
     const card=document.createElement('div'); card.className='card';
     const h=document.createElement('h3'); h.textContent=`${b} › ${m} › ${cat.title}`; card.appendChild(h);
 
@@ -738,21 +692,18 @@ function parseDateSmart(v){
 
     file.style.display='none'; up.style.display='none';
 
-    // Work History → show Sheet view instead of Drive list
+    // Work History sheet view
     if (catKey === 'works') {
       const sheetEntry = WORKS_SHEETS?.[b]?.[m];
       if (sheetEntry && sheetEntry.sheetId) {
-        file.style.display = 'none'; up.style.display = 'none'; refresh.style.display = 'none'; adminBtn.style.display = '';
+        file.style.display = 'none'; up.style.display = 'none'; refresh.style.display = 'none';
         drawWorksSheetView(b, m, list).catch(e => { list.innerHTML = `<div class="small">Failed to load Work History: ${escapeHtml(e.message||String(e))}</div>`; });
-        // Admin sign-in for sheet page (reveals admin-only controls inside table)
-        adminBtn.onclick = async () => {
-          try{ await ensureAuth(); adminBtn.style.display='none'; }catch(e){ alert('Sign-in failed: ' + (e.message || String(e))); }
-        };
+        adminBtn.onclick = async () => { try{ await ensureAuth(); adminBtn.style.display='none'; }catch(e){ alert('Sign-in failed: ' + (e.message || String(e))); } };
         return;
       }
     }
 
-    /* PUBLIC list */
+    /* PUBLIC listing */
     async function publicListFiles(){
       list.innerHTML='<div class="small">Loading…</div>';
       try{
@@ -783,7 +734,7 @@ function parseDateSmart(v){
       }catch(e){ list.innerHTML=`<div class="small">Public list error: ${escapeHtml(e.message||String(e))}</div>`; }
     }
 
-    /* PRIVATE list (admin) */
+    /* PRIVATE listing (admin) */
     async function privateListFiles(){
       list.innerHTML='<div class="small">Loading…</div>';
       try{
@@ -810,12 +761,11 @@ function parseDateSmart(v){
       }catch(e){ list.innerHTML=`<div class='small'>Error: ${escapeHtml(e.message||String(e))}</div>`; }
     }
 
-    // init (public by default)
+    // Init: public
     publicListFiles();
     refresh.onclick = publicListFiles;
     search.oninput = publicListFiles;
 
-    // Admin sign-in
     adminBtn.onclick = async () => {
       try{
         await ensureAuth();
@@ -828,7 +778,7 @@ function parseDateSmart(v){
       }catch(e){ alert('Sign-in failed: ' + (e.message || String(e))); }
     };
 
-    // Upload flow
+    // Upload
     up.onclick=async()=>{
       try{
         if(!fid){ alert('Set Drive folder ID in FOLDERS.'); return; }
@@ -843,7 +793,7 @@ function parseDateSmart(v){
     };
   }
 
-  /* ===== GLOBAL SEARCH across mapped folders ===== */
+  /* ===== GLOBAL SEARCH ===== */
   function buildFolderIndex(){
     const out=[];
     for(const bakery of Object.keys(FOLDERS||{})){
