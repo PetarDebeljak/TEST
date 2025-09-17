@@ -417,28 +417,53 @@
     throw new Error('No sheetName or gid configured.');
   }
 
-  function parseCsvTable(text){
-    // basic CSV parser with quotes
-    const rows = [];
-    let row = [], inQuotes = false, field = '';
-    for (let i=0; i<text.length; i++){
-      const ch = text[i], next = text[i+1];
-      if (inQuotes){
-        if (ch === '"' && next === '"'){ field += '"'; i++; }
-        else if (ch === '"'){ inQuotes = false; }
-        else { field += ch; }
-      } else {
-        if (ch === '"'){ inQuotes = true; }
-        else if (ch === ','){ row.push(field); field=''; }
-        else if (ch === '\n'){ row.push(field); rows.push(row); row=[]; field=''; }
-        else if (ch === '\r'){ /* ignore */ }
-        else { field += ch; }
-      }
-    }
-    if (field.length || row.length) { row.push(field); rows.push(row); }
-    const headers = (rows.shift() || []).map(h => String(h||'').trim());
-    return { headers, rows };
+function parseDateSmart(v){
+  if (v == null) return NaN;
+  // Ako dođe kao broj (Google Sheets/Excel serial)
+  if (typeof v === 'number' && isFinite(v)) {
+    // Google Sheets/Excel epoch: 1899-12-30
+    // 25569 = 1970-01-01; 1 dan = 86400s
+    const ms = (v - 25569) * 86400 * 1000;
+    return isNaN(ms) ? NaN : ms;
   }
+  const t = String(v).trim();
+  if (!t) return NaN;
+
+  // Ako je numerički string (npr. "45265.5")
+  if (/^\d+(\.\d+)?$/.test(t)) {
+    const n = Number(t);
+    if (isFinite(n)) {
+      const ms = (n - 25569) * 86400 * 1000;
+      return isNaN(ms) ? NaN : ms;
+    }
+  }
+
+  // Brzi pokušaj (hvata ISO i mnoge varijante)
+  let d = Date.parse(t);
+  if (!Number.isNaN(d)) return d;
+
+  // dd/mm/yyyy | dd.mm.yyyy | dd-mm-yyyy (i dvocifrene godine) + opcionalno vrijeme
+  let m = t.match(/^(\d{1,2})[\/\.\-\s](\d{1,2})[\/\.\-\s](\d{2,4})(?:[ T](\d{1,2}):(\d{2})(?::(\d{2}))?)?$/);
+  if (m){
+    let dd = +m[1], mm = +m[2], yy = +m[3];
+    let hh = +(m[4] ?? 0), mi = +(m[5] ?? 0), ss = +(m[6] ?? 0);
+    if (yy < 100) yy += (yy >= 70 ? 1900 : 2000); // 70–99 -> 19xx, 00–69 -> 20xx
+    const dt = new Date(yy, mm-1, dd, hh, mi, ss);
+    return isNaN(dt.getTime()) ? NaN : dt.getTime();
+  }
+
+  // yyyy/mm/dd | yyyy.mm.dd | yyyy-mm-dd (+ opcionalno vrijeme)
+  m = t.match(/^(\d{4})[\/\.\-\s](\d{1,2})[\/\.\-\s](\d{1,2})(?:[ T](\d{1,2}):(\d{2})(?::(\d{2}))?)?$/);
+  if (m){
+    const yy = +m[1], mm = +m[2], dd = +m[3];
+    let hh = +(m[4] ?? 0), mi = +(m[5] ?? 0), ss = +(m[6] ?? 0);
+    const dt = new Date(yy, mm-1, dd, hh, mi, ss);
+    return isNaN(dt.getTime()) ? NaN : dt.getTime();
+  }
+
+  return NaN;
+}
+
 
   // Infer column types (date/number/text) for better sort
   function inferTypes(headers, rows){
@@ -575,14 +600,15 @@ function parseDateSmart(v){
   function cmp(a,b,col){
     const t = types[col];
     const va = a[col], vb = b[col];
-    if (t==='date'){
-      const na = parseDateSmart(va);
-      const nb = parseDateSmart(vb);
-      if (isNaN(na) && isNaN(nb)) return 0;
-      if (isNaN(na)) return -1;
-      if (isNaN(nb)) return 1;
-      return na - nb;
-    } else if (t==='number'){
+  if (t==='date'){
+  const na = parseDateSmart(va);
+  const nb = parseDateSmart(vb);
+  // Prazne/pogrešne na kraj:
+  if (isNaN(na) && isNaN(nb)) return 0;
+  if (isNaN(na)) return 1;    // a prazno → nakon b
+  if (isNaN(nb)) return -1;   // b prazno → nakon a
+  return na - nb;
+} else if (t==='number'){
       const na = Number(va); const nb = Number(vb);
       if (isNaN(na) && isNaN(nb)) return 0;
       if (isNaN(na)) return -1;
