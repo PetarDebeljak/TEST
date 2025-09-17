@@ -78,6 +78,8 @@
   .data tbody tr:nth-child(odd){background:var(--zebra)}
   .data tbody tr:hover{background:var(--hover)}
   .data .cell-mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9em;color:#334155}
+  .data td, .data th { overflow-wrap:anywhere;word-break:break-word; }
+  .data td.wide, .data th.wide {min width:420px;}
 
   footer{height:1px}
 </style>
@@ -455,131 +457,203 @@
     });
     return types;
   }
+function parseDateSmart(v){
+  if (v == null) return NaN;
+  const t = String(v).trim();
+  if (!t) return NaN;
 
+  // 1) Brzi pokušaj: Date.parse (hvata ISO, US, itd.)
+  let d = Date.parse(t);
+  if (!Number.isNaN(d)) return d;
+
+  // 2) dd/mm/yyyy ili dd.mm.yyyy ili dd-mm-yyyy (i dvocifrene godine)
+  let m = t.match(/^(\d{1,2})[\/\.\-\s](\d{1,2})[\/\.\-\s](\d{2,4})$/);
+  if (m){
+    let dd = +m[1], mm = +m[2], yy = +m[3];
+    if (yy < 100) yy += (yy >= 70 ? 1900 : 2000); // 70–99 -> 19xx, 00–69 -> 20xx
+    const dt = new Date(yy, mm-1, dd);
+    return isNaN(dt.getTime()) ? NaN : dt.getTime();
+  }
+
+  // 3) yyyy/mm/dd ili yyyy.mm.dd ili yyyy-mm-dd
+  m = t.match(/^(\d{4})[\/\.\-\s](\d{1,2})[\/\.\-\s](\d{1,2})$/);
+  if (m){
+    const yy = +m[1], mm = +m[2], dd = +m[3];
+    const dt = new Date(yy, mm-1, dd);
+    return isNaN(dt.getTime()) ? NaN : dt.getTime();
+  }
+
+  return NaN;
+}
   function renderWorksTable(container, table){
-    container.innerHTML = '';
-    const bar = document.createElement('div'); bar.className='toolbar';
-    const search = document.createElement('input'); search.type='search'; search.placeholder='Search…';
-    const adminBtns = document.createElement('div'); adminBtns.style.display='flex'; adminBtns.style.gap='8px'; adminBtns.style.marginLeft='auto';
-    const dlBtn = document.createElement('button'); dlBtn.className='btn ghost badge'; dlBtn.textContent='Download CSV';
-    const openGs = document.createElement('button'); openGs.className='btn ghost badge'; openGs.textContent='Open in Google Sheets (Admin)';
-    adminBtns.append(dlBtn, openGs);
-    bar.append(search, adminBtns);
-    container.appendChild(bar);
+  container.innerHTML = '';
 
-    // Show admin buttons only when signed in
-    adminBtns.style.display = isAdminSignedIn() ? 'flex' : 'none';
+  // — Toolbar
+  const bar = document.createElement('div'); bar.className='toolbar';
+  const search = document.createElement('input'); search.type='search'; search.placeholder='Search…';
 
-    const wrap = document.createElement('div'); wrap.className='table-wrap';
-    const tableEl = document.createElement('table'); tableEl.className='data';
-    wrap.appendChild(tableEl); container.appendChild(wrap);
+  const adminBtns = document.createElement('div');
+  adminBtns.style.display='flex'; adminBtns.style.gap='8px'; adminBtns.style.marginLeft='auto';
+  const dlBtn = document.createElement('button'); dlBtn.className='btn ghost badge'; dlBtn.textContent='Download CSV';
+  const openGs = document.createElement('button'); openGs.className='btn ghost badge'; openGs.textContent='Open in Google Sheets (Admin)';
+  adminBtns.append(dlBtn, openGs);
 
-    const thead = document.createElement('thead');
-    const trh = document.createElement('tr');
-    table.headers.forEach((h, idx) => {
-      const th = document.createElement('th');
-      th.innerHTML = `<span class="hint">${escapeHtml(h||`Col ${idx+1}`)}</span><span class="sort">⇅</span>`;
-      th.addEventListener('click', () => sortBy(idx));
-      trh.appendChild(th);
+  // prikaži admin gumbe samo kad si prijavljen
+  adminBtns.style.display = isAdminSignedIn() ? 'flex' : 'none';
+
+  bar.append(search, adminBtns);
+  container.appendChild(bar);
+
+  // — Tablica
+  const wrap = document.createElement('div'); wrap.className='table-wrap';
+  const tableEl = document.createElement('table'); tableEl.className='data';
+  wrap.appendChild(tableEl); container.appendChild(wrap);
+
+  const thead = document.createElement('thead');
+  const trh = document.createElement('tr');
+
+  // detektiraj široke stupce po nazivima
+  const wideIdx = new Set();
+  table.headers.forEach((h,i)=>{
+    if (/job\s*description/i.test(h) || /action\s*taken/i.test(h)) wideIdx.add(i);
+  });
+
+  table.headers.forEach((h, idx) => {
+    const th = document.createElement('th');
+    th.innerHTML = `<span class="hint">${escapeHtml(h||`Col ${idx+1}`)}</span><span class="sort">⇅</span>`;
+    if (wideIdx.has(idx)) th.classList.add('wide');
+    th.addEventListener('click', () => sortBy(idx));
+    trh.appendChild(th);
+  });
+  thead.appendChild(trh);
+  tableEl.appendChild(thead);
+
+  const tbody = document.createElement('tbody');
+  tableEl.appendChild(tbody);
+
+  // — Tipovi kolona + stanje
+  let currentRows = table.rows.slice();
+
+  // Pametna detekcija tipa: date/number/text (koristi parseDateSmart)
+  const types = table.headers.map((_, col) => {
+    let isDate=true, isNum=true;
+    for (let i=0;i<Math.min(currentRows.length, 25);i++){
+      const v = currentRows[i][col];
+      if (v==null || v==='') continue;
+      const n = Number(v);
+      if (!isFinite(n)) isNum=false;
+      const d = parseDateSmart(v);
+      if (isNaN(d)) isDate=false;
+      if (!isDate && !isNum) break;
+    }
+    return isDate ? 'date' : (isNum ? 'number' : 'text');
+  });
+
+  let sortCol = -1, sortDir = 1; // 1 asc, -1 desc
+
+  function renderBody(){
+    const q = (search.value||'').toLowerCase();
+    tbody.innerHTML = '';
+    currentRows.forEach(r => {
+      if(q){
+        const hit = r.some(v => String(v||'').toLowerCase().includes(q));
+        if(!hit) return;
+      }
+      const tr = document.createElement('tr');
+      r.forEach((v, i)=>{
+        const td = document.createElement('td');
+        const val = v==null ? '' : String(v);
+        if (wideIdx.has(i)) td.classList.add('wide');
+        if (types[i]==='number') td.classList.add('cell-mono');
+        td.textContent = val;
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
     });
-    thead.appendChild(trh);
-    tableEl.appendChild(thead);
+  }
 
-    const tbody = document.createElement('tbody');
-    tableEl.appendChild(tbody);
-
-    let currentRows = table.rows.slice();
-    const types = inferTypes(table.headers, currentRows);
-    let sortCol = -1, sortDir = 1; // 1 asc, -1 desc
-
-    function renderBody(){
-      const q = (search.value||'').toLowerCase();
-      tbody.innerHTML = '';
-      currentRows.forEach(r => {
-        if(q){
-          const hit = r.some(v => String(v||'').toLowerCase().includes(q));
-          if(!hit) return;
-        }
-        const tr = document.createElement('tr');
-        r.forEach((v, i)=>{
-          const td = document.createElement('td');
-          const val = v==null ? '' : String(v);
-          // light monospace for IDs or numeric codes
-          if (types[i]==='number') td.className='cell-mono';
-          td.textContent = val;
-          tr.appendChild(td);
-        });
-        tbody.appendChild(tr);
-      });
+  function cmp(a,b,col){
+    const t = types[col];
+    const va = a[col], vb = b[col];
+    if (t==='date'){
+      const na = parseDateSmart(va);
+      const nb = parseDateSmart(vb);
+      if (isNaN(na) && isNaN(nb)) return 0;
+      if (isNaN(na)) return -1;
+      if (isNaN(nb)) return 1;
+      return na - nb;
+    } else if (t==='number'){
+      const na = Number(va); const nb = Number(vb);
+      if (isNaN(na) && isNaN(nb)) return 0;
+      if (isNaN(na)) return -1;
+      if (isNaN(nb)) return 1;
+      return na - nb;
+    } else {
+      const sa = String(va||'').toLowerCase();
+      const sb = String(vb||'').toLowerCase();
+      if (sa<sb) return -1;
+      if (sa>sb) return 1;
+      return 0;
     }
+  }
 
-    function cmp(a,b,col){
-      const t = types[col];
-      const va = a[col], vb = b[col];
-      if (t==='date'){
-        const da = Date.parse(va||''); const db = Date.parse(vb||'');
-        const na = isNaN(da) ? -Infinity : da;
-        const nb = isNaN(db) ? -Infinity : db;
-        return na - nb;
-      } else if (t==='number'){
-        const na = Number(va); const nb = Number(vb);
-        if (isNaN(na) && isNaN(nb)) return 0;
-        if (isNaN(na)) return -1;
-        if (isNaN(nb)) return 1;
-        return na - nb;
-      } else {
-        const sa = String(va||'').toLowerCase();
-        const sb = String(vb||'').toLowerCase();
-        if (sa<sb) return -1;
-        if (sa>sb) return 1;
-        return 0;
-      }
-    }
+  function updateSortIndicators(){
+    const ths = thead.querySelectorAll('th .sort');
+    ths.forEach((el, i)=>{
+      el.textContent = (i===sortCol) ? (sortDir===1 ? '↑' : '↓') : '⇅';
+      el.style.opacity = (i===sortCol) ? '1' : '.7';
+    });
+  }
 
-    function updateSortIndicators(){
-      const ths = thead.querySelectorAll('th .sort');
-      ths.forEach((el, i)=>{
-        el.textContent = (i===sortCol) ? (sortDir===1 ? '↑' : '↓') : '⇅';
-        el.style.opacity = (i===sortCol) ? '1' : '.7';
-      });
-    }
-
-    function sortBy(colIdx){
-      if(sortCol === colIdx){ sortDir *= -1; } else { sortCol = colIdx; sortDir = 1; }
-      currentRows.sort((a,b)=> sortDir * cmp(a,b,colIdx) );
-      updateSortIndicators();
-      renderBody();
-    }
-
-    // Admin actions
-    dlBtn.onclick = ()=>{
-      const esc = (s)=>('"'+String(s??'').replace(/"/g,'""')+'"');
-      const lines = [ table.headers.map(esc).join(','), ...currentRows.map(row=>row.map(esc).join(',')) ].join('\r\n');
-      const blob = new Blob([lines], {type:'text/csv'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href=url; a.download='work_history.csv'; document.body.appendChild(a); a.click(); a.remove();
-      setTimeout(()=>URL.revokeObjectURL(url), 5000);
-    };
-    openGs.onclick = async ()=>{
-      try{
-        if(!isAdminSignedIn()) await ensureAuth();
-        window.open(`https://docs.google.com/spreadsheets/d/${WORKS_SHEETS['Bakery 1']['Fritsch'].sheetId}/edit`, '_blank');
-      }catch(e){
-        alert('Admin sign-in failed: ' + (e.message || String(e)));
-      }
-    };
-
-    // Live search
-    search.addEventListener('input', renderBody);
-
-    // Initial render
+  function sortBy(colIdx){
+    if(sortCol === colIdx){ sortDir *= -1; } else { sortCol = colIdx; sortDir = 1; }
+    currentRows.sort((a,b)=> sortDir * cmp(a,b,colIdx) );
     updateSortIndicators();
     renderBody();
-
-    // If admin signs in later (from category view), reveal buttons
-    const reveal = ()=>{ adminBtns.style.display = isAdminSignedIn() ? 'flex' : 'none'; };
-    setInterval(reveal, 800); // lightweight poll (or wire into your sign-in callback)
   }
+
+  // — Admin akcije
+  dlBtn.onclick = ()=>{
+    const esc = (s)=>('"'+String(s??'').replace(/"/g,'""')+'"');
+    const lines = [ table.headers.map(esc).join(','), ...currentRows.map(row=>row.map(esc).join(',')) ].join('\r\n');
+    const blob = new Blob([lines], {type:'text/csv'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href=url; a.download='work_history.csv'; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 5000);
+  };
+  openGs.onclick = async ()=>{
+    try{
+      if(!isAdminSignedIn()) await ensureAuth();
+      // otvori baš onaj sheet koji je prikazan (pronađi ga iz WORKS_SHEETS preko breadcrumbs bi moglo, ali
+      // pošto zoveš ovo iz Work History, koristimo prvi zapis koji je aktivan u drawWorksSheetView)
+      // Ako ti treba dinamički “current”, možeš u drawWorksSheetView spremiti lastSheetId u window.
+      const sid = (window.lastSheetId) || (WORKS_SHEETS['Bakery 1'] && WORKS_SHEETS['Bakery 1']['Fritsch'] && WORKS_SHEETS['Bakery 1']['Fritsch'].sheetId);
+      if (!sid) { alert('Sheet ID not found'); return; }
+      window.open(`https://docs.google.com/spreadsheets/d/${sid}/edit`, '_blank');
+    }catch(e){
+      alert('Admin sign-in failed: ' + (e.message || String(e)));
+    }
+  };
+
+  // — Default: sortiraj po "Completed On" od najstarijeg → najnovijeg
+  const completedCol = table.headers.findIndex(h => /completed\s*on/i.test(h));
+  if (completedCol !== -1){
+    sortCol = completedCol;
+    sortDir = 1; // ASC = najstarije → najnovije
+    currentRows.sort((a,b)=> sortDir * cmp(a,b,completedCol) );
+  }
+
+  // — Render
+  updateSortIndicators();
+  renderBody();
+
+  // — Live search
+  search.addEventListener('input', renderBody);
+
+  // — Ako se naknadno prijavi admin, pokaži gumbe
+  const reveal = ()=>{ adminBtns.style.display = isAdminSignedIn() ? 'flex' : 'none'; };
+  setInterval(reveal, 800);
+}
 
   async function drawWorksSheetView(bakery, machine, container){
     const entry = WORKS_SHEETS?.[bakery]?.[machine];
