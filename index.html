@@ -467,19 +467,19 @@ function parseDateSmart(v){
 
   // Infer column types (date/number/text) for better sort
   function inferTypes(headers, rows){
-    const types = headers.map((_, col) => {
-      let isDate=true, isNum=true;
-      for (let i=0;i<Math.min(rows.length, 25);i++){
-        const v = rows[i][col];
-        if (v==null || v==='') continue;
-        const n = Number(v);
-        if (!isFinite(n)) isNum=false;
-        const d = Date.parse(v);
-        if (isNaN(d)) isDate=false;
-        if (!isDate && !isNum) break;
-      }
-      return isDate ? 'date' : (isNum ? 'number' : 'text');
-    });
+   const types = table.headers.map((_, col) => {
+  let isDate=true, isNum=true;
+  for (let i=0;i<Math.min(rows.length, 25);i++){
+    const v = rows[i][col];
+    if (v==null || v==='') continue;
+    const n = Number(v);
+    if (!isFinite(n)) isNum=false;
+    const d = parseDateSmart(v);            // ← OVO je bitno
+    if (isNaN(d)) isDate=false;
+    if (!isDate && !isNum) break;
+  }
+  return isDate ? 'date' : (isNum ? 'number' : 'text');
+});
     return types;
   }
 function parseDateSmart(v){
