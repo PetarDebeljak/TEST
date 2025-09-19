@@ -80,11 +80,8 @@
   .data .cell-mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9em;color:#334155}
   .data td, .data th { overflow-wrap:anywhere; word-break:break-word; }
   .data td.wide, .data th.wide { min-width:420px; }
-  .data td.asset, 
-.data th.asset {
-  min-width: 220px;   /* ili 250px, ovisno koliko ti treba */
-  white-space: nowrap;
-}
+  /* NEW: wider Asset column */
+  .data td.asset, .data th.asset { min-width:260px; white-space:nowrap; }
 
   footer{height:1px}
 </style>
@@ -282,7 +279,7 @@
     document.getElementById('view').appendChild(card);
   }
 
-  /* === Inline preview helpers (now supports inline <video>) === */
+  /* === Inline preview helpers (supports inline <video>) === */
   const previewBackdrop = document.getElementById('previewBackdrop');
   const previewFrame   = document.getElementById('previewFrame');
   const previewVideo   = document.getElementById('previewVideo');
@@ -323,7 +320,7 @@
       const showWm = new URLSearchParams(location.search).get('wm')==='1';
       wmEl.style.display = showWm ? 'flex' : 'none';
 
-      // NEW: Inline video playback
+      // Inline video playback
       if (isVideo(f.mimeType, f.name)){
         try{
           if(isAdmin){
@@ -332,21 +329,18 @@
             previewVideo.dataset.blobUrl = url;
             previewVideo.src = url;
           } else {
-            // requires file to be shared with "anyone with the link"
             previewVideo.src = publicDownloadUrl(f.id);
           }
           previewFrame.style.display='none';
           previewVideo.style.display='block';
           showPreview();
           return;
-        }catch(e){
-          console.warn('Video inline failed, fallback to Drive preview');
-        }
+        }catch(e){ console.warn('Video inline failed, fallback to Drive preview'); }
       }
 
-      // Images and PDFs inline (as before)
+      // Images & PDFs inline
       if (isPdf(f.mimeType) || isImage(f.mimeType, f.name)){
-        if(isAdmin && (isPdf(f.mimeType) || isImage(f.mimeType, f.name))){
+        if(isAdmin){
           try{
             const blob = await fetchPrivateBlob(f.id);
             const url = URL.createObjectURL(blob);
@@ -357,11 +351,9 @@
         previewFrame.src = previewUrl; showPreview(); return;
       }
 
-      // Other document types -> Drive viewer tab
+      // Other types → Drive viewer
       window.open(f.webViewLink || `https://drive.google.com/file/d/${f.id}/view`, '_blank');
-    }catch(e){
-      alert('Preview failed: '+(e.message||String(e)));
-    }
+    }catch(e){ alert('Preview failed: '+(e.message||String(e))); }
   }
 
   /* ===== Drive & Auth ===== */
@@ -387,7 +379,7 @@
   function isAdminSignedIn(){ return !!accessToken; }
   function folderIdFor(b,m,cat){ return FOLDERS?.[b]?.[m]?.[cat] || null; }
 
-  /* ===== SHEET HELPERS (unchanged) ===== */
+  /* ===== SHEET HELPERS ===== */
   async function fetchSheetTable(sheetId, sheetName, gid){
     if (sheetName) {
       const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
@@ -461,7 +453,7 @@
   function parseDateSmart(v){
     if (v == null) return NaN;
     if (typeof v === 'number' && isFinite(v)) {
-      const ms = (v - 25569) * 86400 * 1000; // Excel epoch
+      const ms = (v - 25569) * 86400 * 1000;
       return isNaN(ms) ? NaN : ms;
     }
     const t = String(v).trim();
@@ -510,11 +502,6 @@
     adminBtns.style.display = isAdminSignedIn() ? 'flex' : 'none';
     bar.append(search, adminBtns);
     container.appendChild(bar);
-    const wideIdx = new Set();
-table.headers.forEach((h,i)=>{
-  if (/job\s*description/i.test(h) || /action\s*taken/i.test(h)) wideIdx.add(i);
-  if (/asset/i.test(h)) wideIdx.add(i);   // <— dodano za Asset
-});
 
     const wrap = document.createElement('div'); wrap.className='table-wrap';
     const tableEl = document.createElement('table'); tableEl.className='data';
@@ -523,13 +510,20 @@ table.headers.forEach((h,i)=>{
     const thead = document.createElement('thead');
     const trh = document.createElement('tr');
 
+    // Detect wide columns and Asset col index
     const wideIdx = new Set();
-    table.headers.forEach((h,i)=>{ if (/job\s*description/i.test(h) || /action\s*taken/i.test(h)) wideIdx.add(i); });
+    let assetCol = -1;
+    table.headers.forEach((h,i)=>{
+      if (/job\s*description/i.test(h)) wideIdx.add(i);
+      if (/action\s*taken/i.test(h))     wideIdx.add(i);
+      if (/(^|\b)asset(\b|$)/i.test(h||'')) { assetCol = i; wideIdx.add(i); }
+    });
 
     table.headers.forEach((h, idx) => {
       const th = document.createElement('th');
       th.innerHTML = `<span class="hint">${escapeHtml(h||`Col ${idx+1}`)}</span><span class="sort">⇅</span>`;
       if (wideIdx.has(idx)) th.classList.add('wide');
+      if (idx === assetCol) th.classList.add('asset');
       th.addEventListener('click', () => sortBy(idx));
       trh.appendChild(th);
     });
@@ -603,6 +597,7 @@ table.headers.forEach((h,i)=>{
           const td = document.createElement('td');
           const val = v==null ? '' : String(v);
           if (wideIdx.has(i)) td.classList.add('wide');
+          if (i === assetCol) td.classList.add('asset');
           if (types[i]==='number') td.classList.add('cell-mono');
           td.textContent = val;
           tr.appendChild(td);
@@ -706,18 +701,16 @@ table.headers.forEach((h,i)=>{
     const list=document.createElement('div'); list.className='list'; card.appendChild(list);
     view.appendChild(card);
 
-    // Work History sheet view
     if (catKey === 'works') {
       const sheetEntry = WORKS_SHEETS?.[b]?.[m];
       if (sheetEntry && sheetEntry.sheetId) {
         refresh.style.display = 'none';
-        drawWorksSheetView(b, m, list).catch(e => { list.innerHTML = `<div class="small">Failed to load Work History: ${escapeHtml(e.message||String(e))}</div>`; });
+        drawWorksSheetView(b, m, list).catch(e => { list.innerHTML = `<div class=\"small\">Failed to load Work History: ${escapeHtml(e.message||String(e))}</div>`; });
         adminBtn.onclick = async () => { try{ await ensureAuth(); adminBtn.style.display='none'; refreshHint(); openFolderBtn.style.display=''; }catch(e){ alert('Sign-in failed: ' + (e.message || String(e))); } };
         return;
       }
     }
 
-    /* PUBLIC listing */
     async function publicListFiles(){
       list.innerHTML='<div class="small">Loading…</div>';
       try{
@@ -742,13 +735,12 @@ table.headers.forEach((h,i)=>{
           const when=f.modifiedTime?new Date(f.modifiedTime).toLocaleString():''; 
           title.innerHTML=`<div><strong>${escapeHtml(f.name)}</strong><div class="meta">${escapeHtml(f.mimeType||'')} • ${escapeHtml(when)}</div></div>`;
           const dl=document.createElement('a'); dl.className='icon-btn'; dl.href=publicDownloadUrl(f.id); dl.target='_blank'; dl.rel='noopener';
-          dl.innerHTML=`<svg viewBox="0 0 24 24" fill="none"><path d="M12 3v10m0 0 4-4m-4 4-4-4M4 20h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+          dl.innerHTML=`<svg viewBox=\"0 0 24 24\" fill=\"none\"><path d=\"M12 3v10m0 0 4-4m-4 4-4-4M4 20h16\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>`;
           row.append(title,dl); list.appendChild(row);
         });
-      }catch(e){ list.innerHTML=`<div class="small">Public list error: ${escapeHtml(e.message||String(e))}</div>`; }
+      }catch(e){ list.innerHTML=`<div class=\"small\">Public list error: ${escapeHtml(e.message||String(e))}</div>`; }
     }
 
-    /* PRIVATE listing (admin) */
     async function privateListFiles(){
       list.innerHTML='<div class="small">Loading…</div>';
       try{
@@ -763,16 +755,15 @@ table.headers.forEach((h,i)=>{
           const row=document.createElement('div'); row.className='item';
           const title=document.createElement('a'); title.className='title'; title.href='#'; title.onclick=(e)=>{ e.preventDefault(); openInlinePreview(f,true); };
           const when=f.modifiedTime?new Date(f.modifiedTime).toLocaleString():'';
-          title.innerHTML=`<div><strong>${escapeHtml(f.name)}</strong><div class="meta">${escapeHtml(f.mimeType||'')} • ${escapeHtml(when)}</div></div>`;
+          title.innerHTML=`<div><strong>${escapeHtml(f.name)}</strong><div class=\"meta\">${escapeHtml(f.mimeType||'')} • ${escapeHtml(when)}</div></div>`;
           const right=document.createElement('div'); right.style.display='flex'; right.style.gap='8px';
           const dl=document.createElement('a'); dl.className='icon-btn'; dl.href=`https://www.googleapis.com/drive/v3/files/${f.id}?alt=media`; dl.target='_blank'; dl.rel='noopener';
-          dl.innerHTML=`<svg viewBox="0 0 24 24" fill="none"><path d="M12 3v10m0 0 4-4m-4 4-4-4M4 20h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+          dl.innerHTML=`<svg viewBox=\"0 0 24 24\" fill=\"none\"><path d=\"M12 3v10m0 0 4-4m-4 4-4-4M4 20h16\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>`;
           right.append(dl); row.append(title, right); list.appendChild(row);
         });
       }catch(e){ list.innerHTML=`<div class='small'>Error: ${escapeHtml(e.message||String(e))}</div>`; }
     }
 
-    // Init: public
     publicListFiles();
     refresh.onclick = publicListFiles;
     search.oninput = publicListFiles;
@@ -925,5 +916,4 @@ table.headers.forEach((h,i)=>{
   </script>
 </body>
 </html>
-
 
