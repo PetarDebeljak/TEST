@@ -80,6 +80,11 @@
   .data .cell-mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9em;color:#334155}
   .data td, .data th { overflow-wrap:anywhere; word-break:break-word; }
   .data td.wide, .data th.wide { min-width:420px; }
+  .data td.asset, 
+.data th.asset {
+  min-width: 220px;   /* ili 250px, ovisno koliko ti treba */
+  white-space: nowrap;
+}
 
   footer{height:1px}
 </style>
@@ -505,6 +510,11 @@
     adminBtns.style.display = isAdminSignedIn() ? 'flex' : 'none';
     bar.append(search, adminBtns);
     container.appendChild(bar);
+    const wideIdx = new Set();
+table.headers.forEach((h,i)=>{
+  if (/job\s*description/i.test(h) || /action\s*taken/i.test(h)) wideIdx.add(i);
+  if (/asset/i.test(h)) wideIdx.add(i);   // <— dodano za Asset
+});
 
     const wrap = document.createElement('div'); wrap.className='table-wrap';
     const tableEl = document.createElement('table'); tableEl.className='data';
