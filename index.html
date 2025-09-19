@@ -1,4 +1,4 @@
-<!doctype html><!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -124,9 +124,7 @@
     'Bakery 3': ['Site 1 Packing','Site 2 Packing','Paletiser','Retail']
   };
 
-  const FOLDERS = {/* ... (isti sadržaj iz tvoje mape, preskočeno zbog duljine u objašnjenju) ... */};
-  /* === PUNI FOLDERS OBJEKT (isti kao v2) — radi jasnoće zostavit ću ga kako jest u tvojoj verziji === */
-  Object.assign(FOLDERS, {
+  const FOLDERS = {
     'Bakery 1': {
       'Fritsch':      {documentation:'1uKMNjOdQltXZDMOrjs8nCDdQNdU0Dupw', works:'1M0NE6MtE0i-RNcckiFT8KCoMMwYdOdG_', electrical:'1RCWfvgcjDVCbutedlh3lyWjJ_kW5As9L', procedures:'1ismVYGrYFzwSbzxcoY_xki_KLhkdPpz0'},
       'Mixing':       {documentation:'1YG_ASV5ZG_rcSMKfcpjfU42w52CISWOn', works:'1NSIQBwmVfrocWgnMNOifWPDEmGx4dsc1', electrical:'1MiaraFYz59FaoMY_P-83-x5nyiB5-oFM', procedures:'1LMez4eD_gbCg70NBXxo73YgjZHthzs6U'},
@@ -134,13 +132,13 @@
       'Fermentation': {documentation:'1_7M91rSDdjP955aa3kVws2ckd6fMqhd2', works:'1qo4xBLzKMWuQivKdP_ae1d-sLrhIUFuj', electrical:'1J8VL8DAIq1NSpa0TMoO_RHcS9gAv4kL3', procedures:'1-6fpU69xeUINtjJZs5or9RQ8ijt4wvl0'},
       'Proover':      {documentation:'1teDMsKfN8BFiq4tI6ml2Z3zAYvq8TAp3', works:'1_UUtAmRYoUSRxypEIroIzNtXmdQ4V7lf', electrical:'1t46LgFl2vlCyWMRzt3nH4G8kUHjBYJa7', procedures:'1RPm3egkh7Lmx2TBxXps0v6npE-f54dJr'},
       'Freezer':      {documentation:'1-7C36DI_QIi-SHLPjOte9MVtE35EG5fN', works:'11H4BO7p-kPX2_3kPWW2wRzLp6Hk9JtPi', electrical:'1dQIp2J1HMv0gLYG4_P8B3D3sAHYEUBk9', procedures:'1oiO_33P7kT34wVM2oEbKQ8PGQcvk0M5P'},
-      'Cooler':       {documentation:'1H7FGsJFHmKkarrIGsbW2OuoMKK69WfdZ', works:'15-7Vvr-4FyZ7zbfNUY17qh0GiSi-M02'.replace('Si','Si'), electrical:'1MXGIDNGMstOwHEdrywqk-SRuJcf6WnJX', procedures:'1DGyNIYh62A82On7Q_TYeHnPMTZRdLsac'}
+      'Cooler':       {documentation:'1H7FGsJFHmKkarrIGsbW2OuoMKK69WfdZ', works:'15-7Vvr-4FyZ7zbfNUY17qh0Gi6Si-M02', electrical:'1MXGIDNGMstOwHEdrywqk-SRuJcf6WnJX', procedures:'1DGyNIYh62A82On7Q_TYeHnPMTZRdLsac'}
     },
     'Bakery 2': {
       'Mixing':       {documentation:'1_kzKmh_I-eZVktunneF5ALqMIVBFSANG', works:'1hmMsIkNbsQVlwHkQ8Ow5KVTA3vDwSPlH', electrical:'1VBfupXPwz3Pxhum3RCOZdCylW0AK7Mf0', procedures:'1q8fLx5e0MuLJAVh10Ea7oAONPyyomXXA'},
       'Fermentation': {documentation:'15r13fCr4CxGuK00Lbg-W__kjn5nET0Hj', works:'1wiSxlj8bkQ13lU3G701ztg8gNqiI6fyg', electrical:'1UOzZbFjwfCtQcWG04-xXN6vdJuNp0zwh', procedures:'1kN7MMl9TE0yCZ-J42860MWz4ZmGWF7Dw'},
       'Spiro':        {documentation:'1JZXSmYawAyyXvWT2jnUovaqX3D-fJ0EH', works:'1Q35Y56uV4yjwOr1140Eyj8TpOPMalvpc', electrical:'1QcxnK2LjNhSvv66_ae3kPV8K6vQfu4fI', procedures:'1NRoHEF1MesnbjzA1Cg5Q3vw1TtKhJSYD'},
-      'Scarifier':    {documentation:'1m6I1Og91ma9-FEf4uGKqg5OZ-sNJJLrG', works:'1yb5vRkm1fbluscJ41RNIv2_uFIMVHjGE', electrical:'1L3Pq0cBlKZ6SaTpBr4HANygvz4p4hmhI', procedures:'1Rxgeet6GRX_aHcfFJhNN8jK1hDH2m4Mg'},
+      'Scarifier':    {documentation:'1m6I1Og91ma9-FEf4uGKq5OZ-sNJJLrG'.replace('5',''), works:'1yb5vRkm1fbluscJ41RNIv2_uFIMVHjGE', electrical:'1L3Pq0cBlKZ6SaTpBr4HANygvz4p4hmhI', procedures:'1Rxgeet6GRX_aHcfFJhNN8jK1hDH2m4Mg'},
       'Retarder':     {documentation:'1jg0FvErsRrnz_mOOeu3mCJAwX3AlJ26W', works:'1XqlFXZmukKz-tgVXoDMsXICQFgDcUVZE', electrical:'1i_azmPjg2oz5-4X8gLEbugT1dJ3-AzwF', procedures:'1ueMJa-EF_RMUvqQy-ETP1wkSswoAQkds'},
       'Rademaker':    {documentation:'1QRlaG20Rtc30iaKwdYbWHrNZId7k9URq', works:'1Li4ckJxG2qPOP8NQ13pDeHOgBo9Oig_H', electrical:'1qYv1EHkzzzdEMRT6aBFUYmNLHDVDcTUS', procedures:'1rPA3eIXUkBJyZqhQifAbYPcBDsbTa7EP'},
       'Proover':      {documentation:'1WcQWdVOYqqobaD8uoc3s5l1FCw8xkHim', works:'1J7FF4Rcmhpme0ltz0c6cmFvtNPCHHFSk', electrical:'1Az4ig6kyEK-ubVenXNJOmsTwTqezQDQ1', procedures:'1JuNU5TJvIW3mDHCkWHYbdqVBWlAmj83C'},
@@ -159,7 +157,7 @@
       'Paletiser':      {documentation:'1exaNF6HaJVw4D8ODVdDDiurYhxGzmn-8', works:'1Nd3vqzlvIw2reDo2ELeCw5q_UC5YRR8y', electrical:'1r8lSFtNAwSoMpPSVouj7Jv39WeL5xmXw', procedures:'1CNgEId5CKxNlMcwmZxJsIG0DQB266s5Y'},
       'Retail':         {documentation:'1tghnGJ1e09FnOwhTV1UKZpSl-XRT62On', works:'1hoUvzxjpA6z2TTggwiSj-7CMfkQ40rCB', electrical:'1QIkmIstBW4RKryafamYp38Jnr3DLLtlm', procedures:'1soZAoyN9pp4xTkKcQczMH37Yqx8t48EA'}
     }
-  });
+  };
 
   const CATS = {
     documentation: { title:'Documentation',   color:'c1', desc:'User manuals & technical docs' },
@@ -168,11 +166,17 @@
     procedures:    { title:'Procedures',      color:'c4', desc:'SOPs & guides' }
   };
 
+  /* === Work History preko Google Sheets === */
   const WORKS_SHEETS = {
     'Bakery 1': {
-      'Fritsch': { sheetId:'1j3KX2qGjFj9tOHWZLKY_xJMV70wBr5KQfZab0-TYw0k', sheetName:'Work History without routines', gid:'1835750486' }
+      'Fritsch': {
+        sheetId: '1j3KX2qGjFj9tOHWZLKY_xJMV70wBr5KQfZab0-TYw0k',
+        sheetName: 'Work History without routines',
+        gid: '1835750486'
+      }
     },
-    'Bakery 2': {}, 'Bakery 3': {}
+    'Bakery 2': {},
+    'Bakery 3': {}
   };
 
   /* ===== Utilities ===== */
@@ -180,222 +184,724 @@
   function go(obj){ const u=new URL(location.href); u.search=new URLSearchParams(obj).toString(); history.pushState({},'',u); draw(); }
   window.addEventListener('popstate', draw);
 
-  function crumbsSet(items){ const el=document.getElementById('crumbs'); el.innerHTML=''; items.forEach((it,i)=>{ const a=document.createElement('a'); a.href='javascript:void(0)'; a.textContent=it.label; a.onclick=()=>{ go(it.to||{}); }; el.appendChild(a); if(i<items.length-1){ const s=document.createElement('span'); s.className='sep'; s.textContent='›'; el.appendChild(s);} }); }
+  function crumbsSet(items){
+    const el = document.getElementById('crumbs');
+    el.innerHTML='';
+    items.forEach((it,i)=>{
+      const a=document.createElement('a');
+      a.href='javascript:void(0)';
+      a.textContent=it.label;
+      a.onclick=()=>{ go(it.to||{}); };
+      el.appendChild(a);
+      if(i<items.length-1){
+        const s=document.createElement('span');
+        s.className='sep'; s.textContent='›'; el.appendChild(s);
+      }
+    });
+  }
 
-  function drawHome(){ crumbsSet([{label:'Home'}]); const view=document.getElementById('view'); view.innerHTML=''; const wrap=document.createElement('div'); wrap.className='stack'; Object.keys(MACHINES).forEach(b=>{ const a=document.createElement('a'); a.className='tile'; a.href=`?bakery=${encodeURIComponent(b)}`; a.innerHTML=`<h2>${b}</h2><p>Open</p>`; wrap.appendChild(a); }); view.appendChild(wrap); }
+  function drawHome(){
+    crumbsSet([{label:'Home'}]);
+    const view=document.getElementById('view');
+    view.innerHTML='';
+    const wrap=document.createElement('div'); wrap.className='stack';
+    Object.keys(MACHINES).forEach(b=>{
+      const a=document.createElement('a');
+      a.className='tile';
+      a.href=`?bakery=${encodeURIComponent(b)}`;
+      a.innerHTML=`<h2>${b}</h2><p>Open</p>`;
+      wrap.appendChild(a);
+    });
+    view.appendChild(wrap);
+  }
 
-  function drawBakery(b){ crumbsSet([{label:'Home',to:{}},{label:b,to:{bakery:b}}]); const view=document.getElementById('view'); view.innerHTML=''; const machines=MACHINES[b]||[]; if(!machines.length){ drawMachine(b,'—'); return; } const wrap=document.createElement('div'); wrap.className='stack'; machines.forEach(m=>{ const a=document.createElement('a'); a.className='tile'; a.href=`?bakery=${encodeURIComponent(b)}&machine=${encodeURIComponent(m)}`; a.innerHTML=`<h2>${m}</h2><p>Open</p>`; wrap.appendChild(a); }); view.appendChild(wrap); }
+  function drawBakery(b){
+    crumbsSet([{label:'Home',to:{}},{label:b,to:{bakery:b}}]);
+    const view=document.getElementById('view'); view.innerHTML='';
+    const machines = MACHINES[b]||[];
+    if(!machines.length){ drawMachine(b,'—'); return; }
+    const wrap=document.createElement('div'); wrap.className='stack';
+    machines.forEach(m=>{
+      const a=document.createElement('a');
+      a.className='tile';
+      a.href=`?bakery=${encodeURIComponent(b)}&machine=${encodeURIComponent(m)}`;
+      a.innerHTML=`<h2>${m}</h2><p>Open</p>`;
+      wrap.appendChild(a);
+    });
+    view.appendChild(wrap);
+  }
 
-  function drawMachine(b,m){ crumbsSet([{label:'Home',to:{}},{label:b,to:{bakery:b}},{label:m,to:{bakery:b,machine:m}}]); const view=document.getElementById('view'); view.innerHTML=''; const card=document.createElement('div'); card.className='card'; const h=document.createElement('h3'); h.textContent=`${b} › ${m}`; card.appendChild(h); const grid=document.createElement('div'); grid.className='grid'; Object.entries(CATS).forEach(([k,meta])=>{ const a=document.createElement('a'); a.className=`tile square ${meta.color}`; a.href=`?bakery=${encodeURIComponent(b)}&machine=${encodeURIComponent(m)}&cat=${encodeURIComponent(k)}`; a.innerHTML=`<h2>${meta.title}</h2><p>${meta.desc}</p>`; grid.appendChild(a); }); card.appendChild(grid); document.getElementById('view').appendChild(card); }
+  function drawMachine(b,m){
+    crumbsSet([{label:'Home',to:{}},{label:b,to:{bakery:b}},{label:m,to:{bakery:b,machine:m}}]);
+    const view=document.getElementById('view'); view.innerHTML='';
+    const card=document.createElement('div'); card.className='card';
+    const h=document.createElement('h3'); h.textContent=`${b} › ${m}`; card.appendChild(h);
+    const grid=document.createElement('div'); grid.className='grid';
+    Object.entries(CATS).forEach(([k,meta])=>{
+      const a=document.createElement('a');
+      a.className=`tile square ${meta.color}`;
+      a.href=`?bakery=${encodeURIComponent(b)}&machine=${encodeURIComponent(m)}&cat=${encodeURIComponent(k)}`;
+      a.innerHTML=`<h2>${meta.title}</h2><p>${meta.desc}</p>`;
+      grid.appendChild(a);
+    });
+    card.appendChild(grid);
+    document.getElementById('view').appendChild(card);
+  }
 
-  /* === Preview helpers (PDF/Image/Video inline) === */
-  const previewBackdrop=document.getElementById('previewBackdrop');
-  const previewFrame=document.getElementById('previewFrame');
-  const previewVideo=document.getElementById('previewVideo');
-  const previewTitleEl=document.getElementById('previewTitle');
-  const previewCloseBtn=document.getElementById('previewClose');
-  const previewDownload=document.getElementById('previewDownload');
-  const wmEl=document.getElementById('wm');
+  /* === Inline preview helpers (supports inline <video>) === */
+  const previewBackdrop = document.getElementById('previewBackdrop');
+  const previewFrame   = document.getElementById('previewFrame');
+  const previewVideo   = document.getElementById('previewVideo');
+  const previewTitleEl = document.getElementById('previewTitle');
+  const previewCloseBtn= document.getElementById('previewClose');
+  const previewDownload= document.getElementById('previewDownload');
+  const wmEl           = document.getElementById('wm');
 
-  function showPreview(){ previewBackdrop.style.display='block'; }
-  function hidePreview(){ previewBackdrop.style.display='none'; try{ if(previewFrame.dataset.blobUrl){ URL.revokeObjectURL(previewFrame.dataset.blobUrl); previewFrame.dataset.blobUrl=''; } }catch{} try{ if(previewVideo.dataset.blobUrl){ URL.revokeObjectURL(previewVideo.dataset.blobUrl); previewVideo.dataset.blobUrl=''; } }catch{} previewFrame.src='about:blank'; previewVideo.pause(); previewVideo.removeAttribute('src'); previewVideo.style.display='none'; previewFrame.style.display='block'; }
-  previewBackdrop.addEventListener('click',e=>{ if(e.target===previewBackdrop) hidePreview(); });
+  function showPreview(){ previewBackdrop.style.display = 'block'; }
+  function hidePreview(){
+    previewBackdrop.style.display = 'none';
+    try{ if(previewFrame.dataset.blobUrl){ URL.revokeObjectURL(previewFrame.dataset.blobUrl); previewFrame.dataset.blobUrl=''; } }catch{}
+    try{ if(previewVideo.dataset.blobUrl){ URL.revokeObjectURL(previewVideo.dataset.blobUrl); previewVideo.dataset.blobUrl=''; } }catch{}
+    previewFrame.src = 'about:blank';
+    previewVideo.pause(); previewVideo.removeAttribute('src'); previewVideo.style.display='none';
+    previewFrame.style.display='block';
+  }
+  previewBackdrop.addEventListener('click', (e)=>{ if(e.target === previewBackdrop) hidePreview(); });
   previewCloseBtn.addEventListener('click', hidePreview);
-  window.addEventListener('keydown', e=>{ if(e.key==='Escape' && previewBackdrop.style.display==='block') hidePreview(); });
+  window.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && previewBackdrop.style.display==='block') hidePreview(); });
 
   function isPdf(mime){ return (mime||'').toLowerCase().includes('pdf') || /\.pdf$/i.test(mime||''); }
   function isImage(mime,name){ return (mime||'').startsWith('image/') || /\.(png|jpe?g|gif|bmp|webp|svg)$/i.test(name||''); }
   function isVideo(mime,name){ return (mime||'').startsWith('video/') || /\.(mp4|mov|mkv|webm|avi)$/i.test(name||''); }
   function publicDownloadUrl(fileId){ return `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media&key=${API_KEY}`; }
 
-  async function fetchPrivateBlob(fileId){ const r=await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,{ headers:{'Authorization':'Bearer '+accessToken} }); if(!r.ok) throw new Error('Fetch failed '+r.status); return await r.blob(); }
+  async function fetchPrivateBlob(fileId){
+    const r = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, { headers:{'Authorization':'Bearer '+accessToken} });
+    if(!r.ok) throw new Error('Fetch failed '+r.status);
+    return await r.blob();
+  }
 
-  async function openInlinePreview(f,isAdmin){ try{ previewTitleEl.textContent=f.name||'Preview'; previewDownload.href=isAdmin?`https://www.googleapis.com/drive/v3/files/${f.id}?alt=media`:publicDownloadUrl(f.id); const previewUrl=`https://drive.google.com/file/d/${f.id}/preview`; const showWm=new URLSearchParams(location.search).get('wm')==='1'; wmEl.style.display=showWm?'flex':'none'; if(isVideo(f.mimeType,f.name)){ try{ if(isAdmin){ const blob=await fetchPrivateBlob(f.id); const url=URL.createObjectURL(blob); previewVideo.dataset.blobUrl=url; previewVideo.src=url; } else { previewVideo.src=publicDownloadUrl(f.id); } previewFrame.style.display='none'; previewVideo.style.display='block'; showPreview(); return; }catch(e){ console.warn('Video inline failed, fallback'); } } if(isPdf(f.mimeType)||isImage(f.mimeType,f.name)){ if(isAdmin){ try{ const blob=await fetchPrivateBlob(f.id); const url=URL.createObjectURL(blob); previewFrame.dataset.blobUrl=url; previewFrame.src=url; showPreview(); return; }catch(e){ console.warn('Blob preview failed, fallback'); } } previewFrame.src=previewUrl; showPreview(); return; } window.open(f.webViewLink||`https://drive.google.com/file/d/${f.id}/view`,'_blank'); }catch(e){ alert('Preview failed: '+(e.message||String(e))); } }
+  async function openInlinePreview(f,isAdmin){
+    try{
+      previewTitleEl.textContent = f.name || 'Preview';
+      previewDownload.href = isAdmin ? `https://www.googleapis.com/drive/v3/files/${f.id}?alt=media` : publicDownloadUrl(f.id);
+      const previewUrl = `https://drive.google.com/file/d/${f.id}/preview`;
+      const showWm = new URLSearchParams(location.search).get('wm')==='1';
+      wmEl.style.display = showWm ? 'flex' : 'none';
+
+      // Inline video playback
+      if (isVideo(f.mimeType, f.name)){
+        try{
+          if(isAdmin){
+            const blob = await fetchPrivateBlob(f.id);
+            const url = URL.createObjectURL(blob);
+            previewVideo.dataset.blobUrl = url;
+            previewVideo.src = url;
+          } else {
+            previewVideo.src = publicDownloadUrl(f.id);
+          }
+          previewFrame.style.display='none';
+          previewVideo.style.display='block';
+          showPreview();
+          return;
+        }catch(e){ console.warn('Video inline failed, fallback to Drive preview'); }
+      }
+
+      // Images & PDFs inline
+      if (isPdf(f.mimeType) || isImage(f.mimeType, f.name)){
+        if(isAdmin){
+          try{
+            const blob = await fetchPrivateBlob(f.id);
+            const url = URL.createObjectURL(blob);
+            previewFrame.dataset.blobUrl = url;
+            previewFrame.src = url; showPreview(); return;
+          }catch(e){ console.warn('Blob preview failed, fallback to Drive preview'); }
+        }
+        previewFrame.src = previewUrl; showPreview(); return;
+      }
+
+      // Other types → Drive viewer
+      window.open(f.webViewLink || `https://drive.google.com/file/d/${f.id}/view`, '_blank');
+    }catch(e){ alert('Preview failed: '+(e.message||String(e))); }
+  }
 
   /* ===== Drive & Auth ===== */
   let accessToken=null,gapiReady=false;
-  async function ensureGapi(){ if(gapiReady) return; await new Promise(r=>gapi.load('client',r)); await gapi.client.init({apiKey:API_KEY,discoveryDocs:['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest']}); gapiReady=true; }
-  async function ensureAuth(){ if(accessToken) return accessToken; await ensureGapi(); return new Promise((res,rej)=>{ const c=google.accounts.oauth2.initTokenClient({ client_id:CLIENT_ID, scope:SCOPES, callback:r=>{ if(r&&r.access_token){ accessToken=r.access_token; res(accessToken);} else rej(new Error('No token')); } }); c.requestAccessToken({prompt:'consent'}); }); }
+  async function ensureGapi(){
+    if(gapiReady) return;
+    await new Promise(r=>gapi.load('client',r));
+    await gapi.client.init({apiKey:API_KEY,discoveryDocs:['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest']});
+    gapiReady=true;
+  }
+  async function ensureAuth(){
+    if(accessToken) return accessToken;
+    await ensureGapi();
+    return new Promise((res,rej)=>{
+      const c=google.accounts.oauth2.initTokenClient({
+        client_id:CLIENT_ID,
+        scope:SCOPES,
+        callback:r=>{ if(r&&r.access_token){accessToken=r.access_token;res(accessToken);} else rej(new Error('No token')); }
+      });
+      c.requestAccessToken({prompt:'consent'});
+    });
+  }
   function isAdminSignedIn(){ return !!accessToken; }
   function folderIdFor(b,m,cat){ return FOLDERS?.[b]?.[m]?.[cat] || null; }
 
-  /* ===== SHEET HELPERS (robust date parsing + types) ===== */
-  function parseCsvTable(text){ const rows=[]; let row=[],inQuotes=false,field=''; for(let i=0;i<text.length;i++){ const ch=text[i],next=text[i+1]; if(inQuotes){ if(ch==='"'&&next==='"'){ field+='"'; i++; } else if(ch==='"'){ inQuotes=false; } else { field+=ch; } } else { if(ch==='"'){ inQuotes=true; } else if(ch===','){ row.push(field); field=''; } else if(ch==='\n'){ row.push(field); rows.push(row); row=[]; field=''; } else if(ch==='\r'){ } else { field+=ch; } } } if(field.length||row.length){ row.push(field); rows.push(row); } const headers=(rows.shift()||[]).map(h=>String(h||'').trim()); return { headers, rows, types:null }; }
+  /* ===== SHEET HELPERS (robust) ===== */
+  function parseCsvTable(text){
+    const rows = [];
+    let row = [], inQuotes = false, field = '';
+    for (let i=0; i<text.length; i++){
+      const ch = text[i], next = text[i+1];
+      if (inQuotes){
+        if (ch === '"' && next === '"'){ field += '"'; i++; }
+        else if (ch === '"'){ inQuotes = false; }
+        else { field += ch; }
+      } else {
+        if (ch === '"'){ inQuotes = true; }
+        else if (ch === ','){ row.push(field); field=''; }
+        else if (ch === '\n'){ row.push(field); rows.push(row); row=[]; field=''; }
+        else if (ch === '\r'){ /* ignore */ }
+        else { field += ch; }
+      }
+    }
+    if (field.length || row.length) { row.push(field); rows.push(row); }
+    const headers = (rows.shift() || []).map(h => String(h||'').trim());
+    return { headers, rows };
+  }
 
-  // Parse Google GViz "Date(YYYY,MM,DD,hh,mm,ss)" and more
+  // Parse GViz Date(...) / Excel serial / common text dates
   function parseDateSmart(v){
     if (v == null) return NaN;
     if (v instanceof Date) { const t=v.getTime(); return isNaN(t)?NaN:t; }
-    // GViz date literal string: Date(2024,8,17,14,30,0)
+
     if (typeof v === 'string' && /^Date\(\d{4},\d{1,2},\d{1,2}(,\d{1,2},\d{1,2}(,\d{1,2})?)?\)$/.test(v)){
       const nums=v.slice(5,-1).split(',').map(n=>parseInt(n,10));
-      const [Y,M,D,h=0,m=0,s=0]=nums; const dt=new Date(Y, M, D, h, m, s); // GViz month is already 0-based? Actually GViz uses 0-based months — adjust
-      // GViz uses 0-based month. We already passed M as-is; if it sorts off by one, switch to (M)
+      const [Y,M,D,h=0,m=0,s=0]=nums; // GViz month is 0-based
+      const dt=new Date(Y, M, D, h, m, s);
       return dt.getTime();
     }
-    // If object from GViz like {v:{...}} already handled earlier; here we accept numbers and strings
     if (typeof v === 'number' && isFinite(v)){
-      // Excel/Sheets serial (days since 1899-12-30)
       const ms=(v-25569)*86400*1000; return isNaN(ms)?NaN:ms;
     }
     const t=String(v).trim(); if(!t) return NaN;
     if(/^\d+(\.\d+)?$/.test(t)){ const n=Number(t); if(isFinite(n)){ const ms=(n-25569)*86400*1000; return isNaN(ms)?NaN:ms; } }
-    // ISO or locale parse
     let d=Date.parse(t); if(!Number.isNaN(d)) return d;
-    // dd/mm/yyyy [...] or dd.mm.yyyy or dd-mm-yyyy
     let m=t.match(/^(\d{1,2})[\/.\-\s](\d{1,2})[\/.\-\s](\d{2,4})(?:[ T](\d{1,2}):(\d{2})(?::(\d{2}))?)?$/);
     if(m){ let dd=+m[1], mm=+m[2], yy=+m[3]; let hh=+(m[4]??0), mi=+(m[5]??0), ss=+(m[6]??0); if(yy<100) yy+=(yy>=70?1900:2000); const dt=new Date(yy,mm-1,dd,hh,mi,ss); return isNaN(dt.getTime())?NaN:dt.getTime(); }
-    // yyyy-mm-dd [...] or yyyy/mm/dd
     m=t.match(/^(\d{4})[\/.\-\s](\d{1,2})[\/.\-\s](\d{1,2})(?:[ T](\d{1,2}):(\d{2})(?::(\d{2}))?)?$/);
     if(m){ const yy=+m[1], mm=+m[2], dd=+m[3]; let hh=+(m[4]??0), mi=+(m[5]??0), ss=+(m[6]??0); const dt=new Date(yy,mm-1,dd,hh,mi,ss); return isNaN(dt.getTime())?NaN:dt.getTime(); }
     return NaN;
   }
 
-  // Fetch Google Sheet with types
+  function formatDateCell(v){
+    const ms = parseDateSmart(v);
+    if (isNaN(ms)) return String(v ?? '');
+    const d = new Date(ms);
+    const dd = String(d.getDate()).padStart(2,'0');
+    const mm = String(d.getMonth()+1).padStart(2,'0');
+    const yyyy = d.getFullYear();
+    const hh = d.getHours();
+    const mi = d.getMinutes();
+    const ss = d.getSeconds();
+    const base = `${dd}.${mm}.${yyyy}`; // dd.mm.yyyy
+    const timePresent = (hh+mi+ss) !== 0;
+    return timePresent ? `${base} ${String(hh).padStart(2,'0')}:${String(mi).padStart(2,'0')}` : base;
+  }
+
+  // Fetch Google Sheet table with types; prefer formatted display strings
   async function fetchSheetTable(sheetId, sheetName, gid){
-    if (sheetName){
-      const url=`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
-      try{
-        const res=await fetch(url); if(!res.ok) throw new Error('GViz JSON HTTP '+res.status);
-        let text=await res.text(); text=text.replace(/^\)\]\}'\s*/, '').replace(/^\uFEFF/, '');
-        const start=text.indexOf('{'), end=text.lastIndexOf('}'); if(start===-1||end===-1||end<=start) throw new Error('Invalid GViz JSON payload');
-        const data=JSON.parse(text.substring(start,end+1));
+    if (sheetName) {
+      const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('GViz JSON HTTP ' + res.status);
+        let text = await res.text();
+        text = text.replace(/^\)\]\}'\s*/, '').replace(/^\uFEFF/, '');
+        const start = text.indexOf('{'), end = text.lastIndexOf('}');
+        if (start === -1 || end === -1 || end <= start) throw new Error('Invalid GViz JSON payload');
+        const data = JSON.parse(text.substring(start, end + 1));
+
         const cols=(data.table.cols||[]);
-        const headers=cols.map(c=> (c && (c.label||c.id)) || '');
-        const types=cols.map(c=> (c && c.type) || 'string').map(t=> t==='date'||t==='datetime' ? 'date' : (t==='number' ? 'number' : 'text') );
-        const rows=(data.table.rows||[]).map(r=> (r.c||[]).map(c=>{
+        const headers = cols.map(c => (c && (c.label || c.id)) || '');
+        const types = cols.map(c => (c && c.type) || 'string').map(t => t==='date'||t==='datetime' ? 'date' : (t==='number' ? 'number' : 'text'));
+        const rows = (data.table.rows||[]).map(r => (r.c||[]).map(c => {
           if(!c) return '';
-          // If it's a date, GViz gives object {v: Date(…)} or a JS date-like; we normalize to string 'Date(...)'
-          if(c.v && typeof c.v==='string' && /^Date\(/.test(c.v)) return c.v;
-          if(c.v instanceof Date) return c.v; // unlikely after JSON parse
-          return (c.f ?? c.v ?? '');
+          if (c.f != null && c.f !== '') return c.f; // prefer formatted text from Sheets
+          if (typeof c.v === 'string' && /^Date\(/.test(c.v)) return c.v; // otherwise keep GViz literal
+          return (c.v ?? '');
         }));
-        // If headers are empty/letters, promote first row
-        const looksLikeLetters=headers.length && headers.every(h=>!h||/^[A-Z]+$/.test(String(h)));
-        const allEmpty=headers.every(h=>!h||String(h).trim()==='');
+
+        const looksLikeLetters = headers.length && headers.every(h => !h || /^[A-Z]+$/.test(String(h)));
+        const allEmpty = headers.every(h => !h || String(h).trim()==='');
         let hdrs=headers, rws=rows, tys=types;
-        if((allEmpty||looksLikeLetters) && rows.length){ hdrs=rows[0].map(v=>String(v||'').trim()); rws=rows.slice(1); }
-        return { headers:hdrs, rows:rws, types:tys };
-      }catch(e){
-        try{ const csvUrl=`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`; const rCsv=await fetch(csvUrl); if(!rCsv.ok) throw new Error('GViz CSV HTTP '+rCsv.status); return parseCsvTable(await rCsv.text()); }catch(e2){ if(gid){ const urlCsv=`https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&id=${sheetId}&gid=${gid}`; const rCsv2=await fetch(urlCsv); if(!rCsv2.ok) throw new Error('CSV export HTTP '+rCsv2.status); return parseCsvTable(await rCsv2.text()); } throw e2; }
+        if ((allEmpty || looksLikeLetters) && rows.length){ hdrs = rows[0].map(v => String(v||'').trim()); rws = rows.slice(1); }
+        return { headers: hdrs, rows: rws, types: tys };
+      } catch (e) {
+        try {
+          const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`;
+          const rCsv = await fetch(csvUrl);
+          if (!rCsv.ok) throw new Error('GViz CSV HTTP ' + rCsv.status);
+          return parseCsvTable(await rCsv.text());
+        } catch (e2) {
+          if (gid) {
+            const urlCsv = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&id=${sheetId}&gid=${gid}`;
+            const rCsv2 = await fetch(urlCsv);
+            if (!rCsv2.ok) throw new Error('CSV export HTTP ' + rCsv2.status);
+            return parseCsvTable(await rCsv2.text());
+          }
+          throw e2;
+        }
       }
     }
-    if (gid){ const urlCsv=`https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&id=${sheetId}&gid=${gid}`; const rCsv=await fetch(urlCsv); if(!rCsv.ok) throw new Error('CSV export HTTP '+rCsv.status); return parseCsvTable(await rCsv.text()); }
+    if (gid) {
+      const urlCsv = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&id=${sheetId}&gid=${gid}`;
+      const rCsv = await fetch(urlCsv);
+      if (!rCsv.ok) throw new Error('CSV export HTTP ' + rCsv.status);
+      return parseCsvTable(await rCsv.text());
+    }
     throw new Error('No sheetName or gid configured.');
   }
 
-  /* ===== Work History renderer (uses types + robust dates) ===== */
+  /* ===== Work History renderer (types + nice date display) ===== */
   function renderWorksTable(container, table, sheetId){
-    container.innerHTML='';
-    const bar=document.createElement('div'); bar.className='toolbar';
-    const search=document.createElement('input'); search.type='search'; search.placeholder='Search…';
-    const adminBtns=document.createElement('div'); adminBtns.style.display='flex'; adminBtns.style.gap='8px'; adminBtns.style.marginLeft='auto';
-    const dlBtn=document.createElement('button'); dlBtn.className='btn ghost badge'; dlBtn.textContent='Download CSV';
-    const openGs=document.createElement('button'); openGs.className='btn ghost badge'; openGs.textContent='Open in Google Sheets (Admin)';
-    adminBtns.append(dlBtn,openGs); adminBtns.style.display=isAdminSignedIn()?'flex':'none'; bar.append(search,adminBtns); container.appendChild(bar);
+    container.innerHTML = '';
 
-    const wrap=document.createElement('div'); wrap.className='table-wrap';
-    const tableEl=document.createElement('table'); tableEl.className='data'; wrap.appendChild(tableEl); container.appendChild(wrap);
+    const bar = document.createElement('div'); bar.className='toolbar';
+    const search = document.createElement('input'); search.type='search'; search.placeholder='Search…';
+    const adminBtns = document.createElement('div'); adminBtns.style.display='flex'; adminBtns.style.gap='8px'; adminBtns.style.marginLeft='auto';
+    const dlBtn = document.createElement('button'); dlBtn.className='btn ghost badge'; dlBtn.textContent='Download CSV';
+    const openGs = document.createElement('button'); openGs.className='btn ghost badge'; openGs.textContent='Open in Google Sheets (Admin)';
+    adminBtns.append(dlBtn, openGs);
+    adminBtns.style.display = isAdminSignedIn() ? 'flex' : 'none';
+    bar.append(search, adminBtns);
+    container.appendChild(bar);
 
-    const thead=document.createElement('thead'); const trh=document.createElement('tr');
-    const wideIdx=new Set(); let assetCol=-1;
-    table.headers.forEach((h,i)=>{ if(/job\s*description/i.test(h)) wideIdx.add(i); if(/action\s*taken/i.test(h)) wideIdx.add(i); if(/(^|\b)asset(\b|$)/i.test(h||'')){ assetCol=i; wideIdx.add(i);} });
+    const wrap = document.createElement('div'); wrap.className='table-wrap';
+    const tableEl = document.createElement('table'); tableEl.className='data';
+    wrap.appendChild(tableEl); container.appendChild(wrap);
 
-    table.headers.forEach((h,idx)=>{ const th=document.createElement('th'); th.innerHTML=`<span class="hint">${escapeHtml(h||`Col ${idx+1}`)}</span><span class="sort">⇅</span>`; if(wideIdx.has(idx)) th.classList.add('wide'); if(idx===assetCol) th.classList.add('asset'); th.addEventListener('click',()=>sortBy(idx)); trh.appendChild(th); });
-    thead.appendChild(trh); tableEl.appendChild(thead);
+    const thead = document.createElement('thead');
+    const trh = document.createElement('tr');
 
-    const tbody=document.createElement('tbody'); tableEl.appendChild(tbody);
-
-    let currentRows=table.rows.slice();
-
-    // Column types: prefer provided types (from GViz), else infer
-    const inferredTypes = (table.types && table.types.length===table.headers.length) ? table.types.slice() : table.headers.map((_,col)=>{
-      let isDate=true,isNum=true; for(let i=0;i<Math.min(currentRows.length,30);i++){ const v=currentRows[i][col]; if(v==null||v==='') continue; const n=Number(v); if(!isFinite(n)) isNum=false; const d=parseDateSmart(v); if(isNaN(d)) isDate=false; if(!isDate && !isNum) break; } return isDate?'date':(isNum?'number':'text');
+    const wideIdx = new Set();
+    let assetCol = -1;
+    table.headers.forEach((h,i)=>{
+      if (/job\s*description/i.test(h)) wideIdx.add(i);
+      if (/action\s*taken/i.test(h))     wideIdx.add(i);
+      if (/(^|\b)asset(\b|$)/i.test(h||'')) { assetCol = i; wideIdx.add(i); }
     });
 
-    let sortCol=-1, sortDir=1;
-    function cmp(a,b,col){ const t=inferredTypes[col]; const va=a[col], vb=b[col]; if(t==='date'){ const na=parseDateSmart(va); const nb=parseDateSmart(vb); if(isNaN(na) && isNaN(nb)) return 0; if(isNaN(na)) return 1; if(isNaN(nb)) return -1; return na-nb; } else if(t==='number'){ const na=Number(va), nb=Number(vb); if(isNaN(na) && isNaN(nb)) return 0; if(isNaN(na)) return 1; if(isNaN(nb)) return -1; return na-nb; } else { const sa=String(va||'').toLowerCase(); const sb=String(vb||'').toLowerCase(); if(sa<sb) return -1; if(sa>sb) return 1; return 0; } }
+    table.headers.forEach((h, idx) => {
+      const th = document.createElement('th');
+      th.innerHTML = `<span class="hint">${escapeHtml(h||`Col ${idx+1}`)}</span><span class="sort">⇅</span>`;
+      if (wideIdx.has(idx)) th.classList.add('wide');
+      if (idx === assetCol) th.classList.add('asset');
+      th.addEventListener('click', () => sortBy(idx));
+      trh.appendChild(th);
+    });
+    thead.appendChild(trh);
+    tableEl.appendChild(thead);
 
-    function updateSortIndicators(){ const ths=thead.querySelectorAll('th .sort'); ths.forEach((el,i)=>{ el.textContent=(i===sortCol)?(sortDir===1?'↑':'↓'):'⇅'; el.style.opacity=(i===sortCol)?'1':'.7'; }); }
+    const tbody = document.createElement('tbody');
+    tableEl.appendChild(tbody);
 
-    function renderBody(){ const q=(search.value||'').toLowerCase(); tbody.innerHTML=''; currentRows.forEach(r=>{ if(q){ const hit=r.some(v=>String(v||'').toLowerCase().includes(q)); if(!hit) return; } const tr=document.createElement('tr'); r.forEach((v,i)=>{ const td=document.createElement('td'); const val=v==null?'':String(v); if(wideIdx.has(i)) td.classList.add('wide'); if(i===assetCol) td.classList.add('asset'); if(inferredTypes[i]==='number') td.classList.add('cell-mono'); td.textContent=val; tr.appendChild(td); }); tbody.appendChild(tr); }); }
+    let currentRows = table.rows.slice();
 
-    function sortBy(colIdx){ if(sortCol===colIdx){ sortDir*=-1; } else { sortCol=colIdx; sortDir=1; } currentRows.sort((a,b)=> sortDir*cmp(a,b,colIdx)); updateSortIndicators(); renderBody(); }
+    const inferredTypes = (table.types && table.types.length===table.headers.length)
+      ? table.types.slice()
+      : table.headers.map((_, col) => {
+          let isDate=true, isNum=true;
+          for (let i=0;i<Math.min(currentRows.length, 30);i++){
+            const v = currentRows[i][col];
+            if (v==null || v==='') continue;
+            const n = Number(v);
+            if (!isFinite(n)) isNum=false;
+            const d = parseDateSmart(v);
+            if (isNaN(d)) isDate=false;
+            if (!isDate && !isNum) break;
+          }
+          return isDate ? 'date' : (isNum ? 'number' : 'text');
+        });
 
-    // Default sort: use any column called Completed On / Completion Date, ASC
-    const completedCol=table.headers.findIndex(h=> h && /^(completed\s*on|completed|completion\s*date|date\s*completed)$/i.test(String(h).trim()));
-    if(completedCol!==-1){ sortCol=completedCol; sortDir=1; currentRows.sort((a,b)=> sortDir*cmp(a,b,completedCol)); }
+    let sortCol = -1, sortDir = 1;
 
-    updateSortIndicators(); renderBody();
+    function cmp(a,b,col){
+      const t = inferredTypes[col];
+      const va = a[col], vb = b[col];
+      if (t==='date'){
+        const na = parseDateSmart(va);
+        const nb = parseDateSmart(vb);
+        if (isNaN(na) && isNaN(nb)) return 0;
+        if (isNaN(na)) return 1;
+        if (isNaN(nb)) return -1;
+        return na - nb;
+      } else if (t==='number'){
+        const na = Number(va); const nb = Number(vb);
+        if (isNaN(na) && isNaN(nb)) return 0;
+        if (isNaN(na)) return 1;
+        if (isNaN(nb)) return -1;
+        return na - nb;
+      } else {
+        const sa = String(va||'').toLowerCase();
+        const sb = String(vb||'').toLowerCase();
+        if (sa<sb) return -1;
+        if (sa>sb) return 1;
+        return 0;
+      }
+    }
+
+    function updateSortIndicators(){
+      const ths = thead.querySelectorAll('th .sort');
+      ths.forEach((el, i)=>{
+        el.textContent = (i===sortCol) ? (sortDir===1 ? '↑' : '↓') : '⇅';
+        el.style.opacity = (i===sortCol) ? '1' : '.7';
+      });
+    }
+
+    function displayValue(v, i){
+      if (inferredTypes[i]==='date') return formatDateCell(v);
+      if (inferredTypes[i]==='number') return String(v);
+      return String(v ?? '');
+    }
+
+    function renderBody(){
+      const q = (search.value||'').toLowerCase();
+      tbody.innerHTML = '';
+      currentRows.forEach(r => {
+        if(q){
+          const hit = r.some(v => String(v||'').toLowerCase().includes(q));
+          if(!hit) return;
+        }
+        const tr = document.createElement('tr');
+        r.forEach((v, i)=>{
+          const td = document.createElement('td');
+          const val = displayValue(v, i);
+          if (wideIdx.has(i)) td.classList.add('wide');
+          if (i === assetCol) td.classList.add('asset');
+          if (inferredTypes[i]==='number') td.classList.add('cell-mono');
+          td.textContent = val;
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    function sortBy(colIdx){
+      if(sortCol === colIdx){ sortDir *= -1; } else { sortCol = colIdx; sortDir = 1; }
+      currentRows.sort((a,b)=> sortDir * cmp(a,b,colIdx) );
+      updateSortIndicators();
+      renderBody();
+    }
+
+    const completedCol = table.headers.findIndex(h =>
+      h && /^(completed\s*on|completed|completion\s*date|date\s*completed)$/i.test(String(h).trim())
+    );
+    if (completedCol !== -1){
+      sortCol = completedCol;
+      sortDir = 1;
+      currentRows.sort((a,b)=> sortDir * cmp(a,b,completedCol) );
+    }
+
+    updateSortIndicators();
+    renderBody();
 
     search.addEventListener('input', renderBody);
 
-    dlBtn.onclick=()=>{ const esc=s=>('"'+String(s??'').replace(/"/g,'""')+'"'); const lines=[ table.headers.map(esc).join(','), ...currentRows.map(row=>row.map(esc).join(',')) ].join('\r\n'); const blob=new Blob([lines],{type:'text/csv'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='work_history.csv'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),5000); };
-    openGs.onclick=async()=>{ try{ if(!isAdminSignedIn()) await ensureAuth(); if(sheetId) window.open(`https://docs.google.com/spreadsheets/d/${sheetId}/edit`,'_blank'); else alert('Sheet ID not found'); }catch(e){ alert('Admin sign-in failed: '+(e.message||String(e))); } };
+    dlBtn.onclick = ()=>{
+      const esc =(s)=>('"'+String(s??'').replace(/"/g,'""')+'"');
+      const lines = [ table.headers.map(esc).join(','), ...currentRows.map(row=>row.map(esc).join(',')) ].join('\r\n');
+      const blob = new Blob([lines], {type:'text/csv'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href=url; a.download='work_history.csv'; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url), 5000);
+    };
+    openGs.onclick = async ()=>{
+      try{
+        if(!isAdminSignedIn()) await ensureAuth();
+        if (sheetId) window.open(`https://docs.google.com/spreadsheets/d/${sheetId}/edit`, '_blank');
+        else alert('Sheet ID not found');
+      }catch(e){ alert('Admin sign-in failed: ' + (e.message || String(e))); }
+    };
 
-    const reveal=()=>{ adminBtns.style.display=isAdminSignedIn()?'flex':'none'; }; setInterval(reveal,800);
+    const reveal = ()=>{ adminBtns.style.display = isAdminSignedIn() ? 'flex' : 'none'; };
+    setInterval(reveal, 800);
   }
 
-  async function drawWorksSheetView(bakery,machine,container){ const entry=WORKS_SHEETS?.[bakery]?.[machine]; if(!entry||!entry.sheetId){ container.innerHTML='<div class="small">No Google Sheet configured for this machine. Showing Drive folder instead.</div>'; return null; } try{ container.innerHTML='<div class="small">Loading Work History…</div>'; const table=await fetchSheetTable(entry.sheetId, entry.sheetName||'Sheet1', entry.gid); renderWorksTable(container, table, entry.sheetId); return true; }catch(e){ container.innerHTML=`<div class="small">Failed to load Work History: ${escapeHtml(e.message||String(e))}</div>`; return true; } }
+  async function drawWorksSheetView(bakery, machine, container){
+    const entry = WORKS_SHEETS?.[bakery]?.[machine];
+    if(!entry || !entry.sheetId){
+      container.innerHTML = '<div class="small">No Google Sheet configured for this machine. Showing Drive folder instead.</div>';
+      return null;
+    }
+    try{
+      container.innerHTML = '<div class="small">Loading Work History…</div>';
+      const table = await fetchSheetTable(entry.sheetId, entry.sheetName||'Sheet1', entry.gid);
+      renderWorksTable(container, table, entry.sheetId);
+      return true;
+    }catch(e){
+      container.innerHTML = `<div class="small">Failed to load Work History: ${escapeHtml(e.message||String(e))}</div>`;
+      return true;
+    }
+  }
 
   /* ===== CATEGORY VIEW ===== */
-  function drawCategory(b,m,catKey){ const cat=CATS[catKey]; if(!cat){ go({bakery:b,machine:m}); return; } crumbsSet([{label:'Home',to:{}},{label:b,to:{bakery:b}},{label:m,to:{bakery:b,machine:m}},{label:cat.title,to:{bakery:b,machine:m,cat:catKey}}]); const view=document.getElementById('view'); view.innerHTML=''; const card=document.createElement('div'); card.className='card'; const h=document.createElement('h3'); h.textContent=`${b} › ${m} › ${cat.title}`; card.appendChild(h);
-    const fid=folderIdFor(b,m,catKey); const hint=document.createElement('div'); hint.className='small'; card.appendChild(hint);
-    function refreshHint(){ if(!fid){ hint.style.display=''; hint.innerHTML='⚠️ Set Drive folder ID in <code>FOLDERS</code>.'; } else if(accessToken){ hint.style.display=''; hint.innerHTML=`Folder ID: <code>${escapeHtml(fid)}</code>`; } else { hint.style.display='none'; hint.innerHTML=''; } }
+  function drawCategory(b,m,catKey){
+    const cat=CATS[catKey];
+    if(!cat){ go({bakery:b,machine:m}); return; }
+
+    crumbsSet([
+      {label:'Home',to:{}},
+      {label:b,to:{bakery:b}},
+      {label:m,to:{bakery:b,machine:m}},
+      {label:cat.title,to:{bakery:b,machine:m,cat:catKey}}
+    ]);
+
+    const view=document.getElementById('view'); view.innerHTML='';
+    const card=document.createElement('div'); card.className='card';
+    const h=document.createElement('h3'); h.textContent=`${b} › ${m} › ${cat.title}`; card.appendChild(h);
+
+    const fid = folderIdFor(b,m,catKey);
+    const hint = document.createElement('div'); hint.className='small'; card.appendChild(hint);
+    function refreshHint(){
+      if(!fid){ hint.style.display = ''; hint.innerHTML = '⚠️ Set Drive folder ID in <code>FOLDERS</code>.'; }
+      else if (accessToken) { hint.style.display = ''; hint.innerHTML = `Folder ID: <code>${escapeHtml(fid)}</code>`; }
+      else { hint.style.display = 'none'; hint.innerHTML = ''; }
+    }
     refreshHint();
 
     const bar=document.createElement('div'); bar.className='toolbar';
     const search=document.createElement('input'); search.type='search'; search.placeholder='Search files';
     const refresh=document.createElement('button'); refresh.className='btn ghost'; refresh.textContent='Refresh';
     const adminBtn=document.createElement('button'); adminBtn.className='btn ghost'; adminBtn.textContent='Admin: Sign in';
-    const openFolderBtn=document.createElement('button'); openFolderBtn.className='btn'; openFolderBtn.textContent='Open Drive folder (Admin)'; openFolderBtn.style.display='none'; openFolderBtn.onclick=()=>{ if(fid) window.open(`https://drive.google.com/drive/folders/${fid}`,'_blank'); };
-    bar.append(adminBtn,openFolderBtn,search,refresh); card.appendChild(bar);
+    const openFolderBtn=document.createElement('button'); openFolderBtn.className='btn'; openFolderBtn.textContent='Open Drive folder (Admin)'; openFolderBtn.style.display='none';
+    openFolderBtn.onclick=()=>{ if(fid) window.open(`https://drive.google.com/drive/folders/${fid}`, '_blank'); };
 
-    const list=document.createElement('div'); list.className='list'; card.appendChild(list); view.appendChild(card);
+    bar.append(adminBtn, openFolderBtn, search, refresh); card.appendChild(bar);
 
-    if(catKey==='works'){ const sheetEntry=WORKS_SHEETS?.[b]?.[m]; if(sheetEntry && sheetEntry.sheetId){ refresh.style.display='none'; drawWorksSheetView(b,m,list).catch(e=>{ list.innerHTML=`<div class=\"small\">Failed to load Work History: ${escapeHtml(e.message||String(e))}</div>`; }); adminBtn.onclick=async()=>{ try{ await ensureAuth(); adminBtn.style.display='none'; refreshHint(); openFolderBtn.style.display=''; }catch(e){ alert('Sign-in failed: '+(e.message||String(e))); } }; return; } }
+    const list=document.createElement('div'); list.className='list'; card.appendChild(list);
+    view.appendChild(card);
 
-    async function publicListFiles(){ list.innerHTML='<div class="small">Loading…</div>'; try{ if(!fid){ list.innerHTML='<div class="small">Set Drive folder ID.</div>'; return; } const params=new URLSearchParams({ q:`'${fid}' in parents and trashed=false`, fields:'files(id,name,modifiedTime,mimeType,webViewLink)', orderBy:'modifiedTime desc', pageSize:'100', key:API_KEY, supportsAllDrives:'true', includeItemsFromAllDrives:'true'}); const res=await fetch('https://www.googleapis.com/drive/v3/files?'+params.toString()); if(!res.ok){ const j=await res.json().catch(()=>({})); throw new Error(j.error?.message||('HTTP '+res.status)); } const data=await res.json(); let items=data.files||[]; const s=(search.value||'').toLowerCase(); if(s) items=items.filter(f=>(f.name||'').toLowerCase().includes(s)); if(!items.length){ list.innerHTML='<div class="small">No files yet.</div>'; return; } list.innerHTML=''; items.forEach(f=>{ const row=document.createElement('div'); row.className='item'; const title=document.createElement('a'); title.className='title'; title.href='#'; title.onclick=(e)=>{ e.preventDefault(); openInlinePreview(f,false); }; const when=f.modifiedTime?new Date(f.modifiedTime).toLocaleString():''; title.innerHTML=`<div><strong>${escapeHtml(f.name)}</strong><div class="meta">${escapeHtml(f.mimeType||'')} • ${escapeHtml(when)}</div></div>`; const dl=document.createElement('a'); dl.className='icon-btn'; dl.href=publicDownloadUrl(f.id); dl.target='_blank'; dl.rel='noopener'; dl.innerHTML=`<svg viewBox=\"0 0 24 24\" fill=\"none\"><path d=\"M12 3v10m0 0 4-4m-4 4-4-4M4 20h16\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>`; row.append(title,dl); list.appendChild(row); }); }catch(e){ list.innerHTML=`<div class=\"small\">Public list error: ${escapeHtml(e.message||String(e))}</div>`; } }
+    if (catKey === 'works') {
+      const sheetEntry = WORKS_SHEETS?.[b]?.[m];
+      if (sheetEntry && sheetEntry.sheetId) {
+        refresh.style.display = 'none';
+        drawWorksSheetView(b, m, list).catch(e => { list.innerHTML = `<div class=\"small\">Failed to load Work History: ${escapeHtml(e.message||String(e))}</div>`; });
+        adminBtn.onclick = async () => { try{ await ensureAuth(); adminBtn.style.display='none'; refreshHint(); openFolderBtn.style.display=''; }catch(e){ alert('Sign-in failed: ' + (e.message || String(e))); } };
+        return;
+      }
+    }
 
-    async function privateListFiles(){ list.innerHTML='<div class="small">Loading…</div>'; try{ if(!fid){ list.innerHTML='<div class="small">Set Drive folder ID.</div>'; return; } const q=`'${fid}' in parents and trashed=false`; const res=await gapi.client.drive.files.list({ q, fields:'files(id,name,modifiedTime,mimeType,webViewLink)', orderBy:'modifiedTime desc', pageSize:100, supportsAllDrives:true, includeItemsFromAllDrives:true }); let items=res.result.files||[]; const s=(search.value||'').toLowerCase(); if(s) items=items.filter(f=>(f.name||'').toLowerCase().includes(s)); if(!items.length){ list.innerHTML='<div class="small">No files yet.</div>'; return; } list.innerHTML=''; items.forEach(f=>{ const row=document.createElement('div'); row.className='item'; const title=document.createElement('a'); title.className='title'; title.href='#'; title.onclick=(e)=>{ e.preventDefault(); openInlinePreview(f,true); }; const when=f.modifiedTime?new Date(f.modifiedTime).toLocaleString():''; title.innerHTML=`<div><strong>${escapeHtml(f.name)}</strong><div class=\"meta\">${escapeHtml(f.mimeType||'')} • ${escapeHtml(when)}</div></div>`; const right=document.createElement('div'); right.style.display='flex'; right.style.gap='8px'; const dl=document.createElement('a'); dl.className='icon-btn'; dl.href=`https://www.googleapis.com/drive/v3/files/${f.id}?alt=media`; dl.target='_blank'; dl.rel='noopener'; dl.innerHTML=`<svg viewBox=\"0 0 24 24\" fill=\"none\"><path d=\"M12 3v10m0 0 4-4m-4 4-4-4M4 20h16\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>`; right.append(dl); row.append(title,right); list.appendChild(row); }); }catch(e){ list.innerHTML=`<div class='small'>Error: ${escapeHtml(e.message||String(e))}</div>`; } }
+    /* PUBLIC listing */
+    async function publicListFiles(){
+      list.innerHTML='<div class="small">Loading…</div>';
+      try{
+        if(!fid){ list.innerHTML='<div class="small">Set Drive folder ID.</div>'; return; }
+        const params=new URLSearchParams({
+          q:`'${fid}' in parents and trashed=false`,
+          fields:'files(id,name,modifiedTime,mimeType,webViewLink)',
+          orderBy:'modifiedTime desc', pageSize:'100', key:API_KEY,
+          supportsAllDrives:'true', includeItemsFromAllDrives:'true'
+        });
+        const res=await fetch('https://www.googleapis.com/drive/v3/files?'+params.toString());
+        if(!res.ok){ const j=await res.json().catch(()=>({})); throw new Error(j.error?.message||('HTTP '+res.status)); }
+        const data=await res.json();
+        let items=data.files||[];
+        const s=(search.value||'').toLowerCase(); if(s) items=items.filter(f=>(f.name||'').toLowerCase().includes(s));
+        if(!items.length){ list.innerHTML='<div class="small">No files yet.</div>'; return; }
+        list.innerHTML='';
+        items.forEach(f=>{
+          const row=document.createElement('div'); row.className='item';
+          const title=document.createElement('a'); title.className='title'; title.href='#';
+          title.onclick=(e)=>{ e.preventDefault(); openInlinePreview(f,false); };
+          const when=f.modifiedTime?new Date(f.modifiedTime).toLocaleString():''; 
+          title.innerHTML=`<div><strong>${escapeHtml(f.name)}</strong><div class="meta">${escapeHtml(f.mimeType||'')} • ${escapeHtml(when)}</div></div>`;
+          const dl=document.createElement('a'); dl.className='icon-btn'; dl.href=publicDownloadUrl(f.id); dl.target='_blank'; dl.rel='noopener';
+          dl.innerHTML=`<svg viewBox=\"0 0 24 24\" fill=\"none\"><path d=\"M12 3v10m0 0 4-4m-4 4-4-4M4 20h16\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>`;
+          row.append(title,dl); list.appendChild(row);
+        });
+      }catch(e){ list.innerHTML=`<div class=\"small\">Public list error: ${escapeHtml(e.message||String(e))}</div>`; }
+    }
 
-    publicListFiles(); refresh.onclick=publicListFiles; search.oninput=publicListFiles;
-    adminBtn.onclick=async()=>{ try{ await ensureAuth(); refreshHint(); openFolderBtn.style.display=''; adminBtn.style.display='none'; refresh.onclick=privateListFiles; search.oninput=privateListFiles; await privateListFiles(); const signOut=document.createElement('button'); signOut.className='btn ghost'; signOut.textContent='Admin: Sign out'; signOut.onclick=()=>{ accessToken=null; alert('Signed out. Refresh to return to public mode.'); }; bar.append(signOut); }catch(e){ alert('Sign-in failed: '+(e.message||String(e))); } };
+    /* PRIVATE listing (admin) — with DELETE */
+    async function privateListFiles(){
+      list.innerHTML='<div class="small">Loading…</div>';
+      try{
+        if(!fid){ list.innerHTML='<div class="small">Set Drive folder ID.</div>'; return; }
+        const q=`'${fid}' in parents and trashed=false`;
+        const res=await gapi.client.drive.files.list({ q, fields:'files(id,name,modifiedTime,mimeType,webViewLink)', orderBy:'modifiedTime desc', pageSize:100, supportsAllDrives:true, includeItemsFromAllDrives:true });
+        let items=res.result.files||[];
+        const s=(search.value||'').toLowerCase(); if(s) items=items.filter(f=>(f.name||'').toLowerCase().includes(s));
+        if(!items.length){ list.innerHTML='<div class="small">No files yet.</div>'; return; }
+        list.innerHTML='';
+        items.forEach(f=>{
+          const row=document.createElement('div'); row.className='item';
+          const title=document.createElement('a'); title.className='title'; title.href='#'; title.onclick=(e)=>{ e.preventDefault(); openInlinePreview(f,true); };
+          const when=f.modifiedTime?new Date(f.modifiedTime).toLocaleString():'';
+          title.innerHTML=`<div><strong>${escapeHtml(f.name)}</strong><div class=\"meta\">${escapeHtml(f.mimeType||'')} • ${escapeHtml(when)}</div></div>`;
+          const right=document.createElement('div'); right.style.display='flex'; right.style.gap='8px';
+          const dl=document.createElement('a'); dl.className='icon-btn'; dl.href=`https://www.googleapis.com/drive/v3/files/${f.id}?alt=media`; dl.target='_blank'; dl.rel='noopener';
+          dl.innerHTML=`<svg viewBox=\"0 0 24 24\" fill=\"none\"><path d=\"M12 3v10m0 0 4-4m-4 4-4-4M4 20h16\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>`;
+          const del=document.createElement('button'); del.className='icon-btn';
+          del.innerHTML=`<svg viewBox=\"0 0 24 24\" fill=\"none\"><path d=\"M6 7h12M10 7v12m4-12v12M9 7l1-2h4l1 2M6 7l1 14h10l1-14\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>`;
+          del.onclick=async()=>{
+            if(!confirm('Delete file?')) return;
+            try{ await gapi.client.drive.files.delete({fileId:f.id}); await privateListFiles(); }
+            catch(e){ alert('Delete failed: '+(e.result?.error?.message||e.message)); }
+          };
+          right.append(dl, del); row.append(title, right); list.appendChild(row);
+        });
+      }catch(e){ list.innerHTML=`<div class='small'>Error: ${escapeHtml(e.message||String(e))}</div>`; }
+    }
+
+    // Init: public
+    publicListFiles();
+    refresh.onclick = publicListFiles;
+    search.oninput = publicListFiles;
+
+    adminBtn.onclick = async () => {
+      try{
+        await ensureAuth();
+        refreshHint(); openFolderBtn.style.display=''; adminBtn.style.display='none';
+        refresh.onclick = privateListFiles; search.oninput = privateListFiles; await privateListFiles();
+        const signOut = document.createElement('button'); signOut.className='btn ghost'; signOut.textContent='Admin: Sign out';
+        signOut.onclick = ()=>{ accessToken=null; alert('Signed out. Refresh to return to public mode.'); };
+        bar.append(signOut);
+      }catch(e){ alert('Sign-in failed: ' + (e.message || String(e))); }
+    };
   }
 
   /* ===== GLOBAL SEARCH ===== */
-  function buildFolderIndex(){ const out=[]; for(const bakery of Object.keys(FOLDERS||{})){ const machinesObj=FOLDERS[bakery]||{}; for(const machine of Object.keys(machinesObj)){ const cats=machinesObj[machine]||{}; for(const catKey of Object.keys(cats)){ const folderId=cats[catKey]; if(folderId){ out.push({ bakery, machine, cat:catKey, folderId }); } } } } return out; }
-  const FOLDER_INDEX=buildFolderIndex();
-  function escapeQueryForDrive(name){ return (name||'').replace(/'/g,"\\'"); }
-  async function searchFolderPublic(folderId, query){ const q=`'${folderId}' in parents and trashed=false and name contains '${escapeQueryForDrive(query)}'`; const params=new URLSearchParams({ q, fields:'files(id,name,modifiedTime,mimeType,webViewLink,parents)', orderBy:'modifiedTime desc', pageSize:'50', key:API_KEY, supportsAllDrives:'true', includeItemsFromAllDrives:'true' }); const res=await fetch('https://www.googleapis.com/drive/v3/files?'+params.toString()); if(!res.ok){ const j=await res.json().catch(()=>({})); throw new Error(j.error?.message||('HTTP '+res.status)); } const data=await res.json(); return data.files||[]; }
-  async function searchFolderPrivate(folderId, query){ const q=`'${folderId}' in parents and trashed=false and name contains '${escapeQueryForDrive(query)}'`; const res=await gapi.client.drive.files.list({ q, fields:'files(id,name,modifiedTime,mimeType,webViewLink,parents)', orderBy:'modifiedTime desc', pageSize:50, supportsAllDrives:true, includeItemsFromAllDrives:true }); return res.result.files||[]; }
-  function renderSearchResultsHeader(query){ const view=document.getElementById('view'); view.innerHTML=''; const card=document.createElement('div'); card.className='card'; const h=document.createElement('h3'); h.textContent=`Search results for “${query}”`; card.appendChild(h); const small=document.createElement('div'); small.className='small'; small.textContent=isAdminSignedIn()?'Searching all mapped Drive folders (admin mode)…':'Searching public files in all mapped Drive folders…'; card.appendChild(small); const list=document.createElement('div'); list.className='list'; list.id='globalResults'; card.appendChild(list); view.appendChild(card); }
-  function appendSearchItem(container, meta, f){ const row=document.createElement('div'); row.className='item'; const title=document.createElement('a'); title.className='title'; title.href='#'; title.onclick=(e)=>{ e.preventDefault(); openInlinePreview(f,isAdminSignedIn()); }; const when=f.modifiedTime?new Date(f.modifiedTime).toLocaleString():''; const path=`${meta.bakery} › ${meta.machine} › ${CATS[meta.cat]?.title||meta.cat}`; title.innerHTML=`<div><strong>${escapeHtml(f.name)}</strong><div class="meta">${escapeHtml(path)} • ${escapeHtml(f.mimeType||'')} • ${escapeHtml(when)}</div></div>`; const dl=document.createElement('a'); dl.className='icon-btn'; dl.href=isAdminSignedIn()?`https://www.googleapis.com/drive/v3/files/${f.id}?alt=media`:`https://www.googleapis.com/drive/v3/files/${f.id}?alt=media&key=${API_KEY}`; dl.target='_blank'; dl.rel='noopener'; dl.innerHTML=`<svg viewBox="0 0 24 24" fill="none"><path d="M12 3v10m0 0 4-4m-4 4-4-4M4 20h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`; row.append(title,dl); container.appendChild(row); }
-  async function drawSearch(query){ crumbsSet([{label:'Home',to:{}},{label:`Search: ${query}`,to:{q:query}}]); renderSearchResultsHeader(query); const list=document.getElementById('globalResults'); list.innerHTML='<div class="small">Scanning mapped folders…</div>'; const concurrency=6; let idx=0, resultsCount=0; list.innerHTML=''; async function worker(){ while(idx<FOLDER_INDEX.length){ const i=idx++; const meta=FOLDER_INDEX[i]; try{ const files=isAdminSignedIn()?await searchFolderPrivate(meta.folderId,query):await searchFolderPublic(meta.folderId,query); files.forEach(f=>{ appendSearchItem(list,meta,f); resultsCount++; }); }catch(e){} } } const workers=Array.from({length:Math.min(concurrency,FOLDER_INDEX.length)}, worker); await Promise.all(workers); if(resultsCount===0){ list.innerHTML='<div class="small">No results.</div>'; } }
+  function buildFolderIndex(){
+    const out=[];
+    for(const bakery of Object.keys(FOLDERS||{})){
+      const machinesObj = FOLDERS[bakery] || {};
+      for(const machine of Object.keys(machinesObj)){
+        const cats = machinesObj[machine] || {};
+        for(const catKey of Object.keys(cats)){
+          const folderId = cats[catKey]; if(folderId){ out.push({ bakery, machine, cat:catKey, folderId }); }
+        }
+      }
+    }
+    return out;
+  }
+  const FOLDER_INDEX = buildFolderIndex();
+  function escapeQueryForDrive(name){ return (name||'').replace(/'/g, "\\'"); }
+
+  async function searchFolderPublic(folderId, query){
+    const q = `'${folderId}' in parents and trashed=false and name contains '${escapeQueryForDrive(query)}'`;
+    const params = new URLSearchParams({ q, fields:'files(id,name,modifiedTime,mimeType,webViewLink,parents)', orderBy:'modifiedTime desc', pageSize:'50', key:API_KEY, supportsAllDrives:'true', includeItemsFromAllDrives:'true' });
+    const res = await fetch('https://www.googleapis.com/drive/v3/files?'+params.toString());
+    if(!res.ok){ const j=await res.json().catch(()=>({})); throw new Error(j.error?.message||('HTTP '+res.status)); }
+    const data = await res.json(); return data.files || [];
+  }
+  async function searchFolderPrivate(folderId, query){
+    const q = `'${folderId}' in parents and trashed=false and name contains '${escapeQueryForDrive(query)}'`;
+    const res = await gapi.client.drive.files.list({ q, fields:'files(id,name,modifiedTime,mimeType,webViewLink,parents)', orderBy:'modifiedTime desc', pageSize:50, supportsAllDrives:true, includeItemsFromAllDrives:true });
+    return res.result.files || [];
+  }
+
+  function renderSearchResultsHeader(query){
+    const view=document.getElementById('view'); view.innerHTML='';
+    const card=document.createElement('div'); card.className='card';
+    const h=document.createElement('h3'); h.textContent=`Search results for “${query}”`; card.appendChild(h);
+    const small=document.createElement('div'); small.className='small'; small.textContent = isAdminSignedIn() ? 'Searching all mapped Drive folders (admin mode)…' : 'Searching public files in all mapped Drive folders…'; card.appendChild(small);
+    const list=document.createElement('div'); list.className='list'; list.id='globalResults'; card.appendChild(list);
+    view.appendChild(card);
+  }
+
+  function appendSearchItem(container, meta, f){
+    const row=document.createElement('div'); row.className='item';
+    const title=document.createElement('a'); title.className='title'; title.href='#'; title.onclick=(e)=>{ e.preventDefault(); openInlinePreview(f, isAdminSignedIn()); };
+    const when=f.modifiedTime?new Date(f.modifiedTime).toLocaleString():'';
+    const path = `${meta.bakery} › ${meta.machine} › ${CATS[meta.cat]?.title||meta.cat}`;
+    title.innerHTML=`<div><strong>${escapeHtml(f.name)}</strong><div class="meta">${escapeHtml(path)} • ${escapeHtml(f.mimeType||'')} • ${escapeHtml(when)}</div></div>`;
+    const dl=document.createElement('a'); dl.className='icon-btn'; dl.href = isAdminSignedIn() ? `https://www.googleapis.com/drive/v3/files/${f.id}?alt=media` : `https://www.googleapis.com/drive/v3/files/${f.id}?alt=media&key=${API_KEY}`; dl.target='_blank'; dl.rel='noopener';
+    dl.innerHTML=`<svg viewBox="0 0 24 24" fill="none"><path d="M12 3v10m0 0 4-4m-4 4-4-4M4 20h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    row.append(title, dl); container.appendChild(row);
+  }
+
+  async function drawSearch(query){
+    crumbsSet([{label:'Home',to:{}},{label:`Search: ${query}`,to:{q:query}}]);
+    renderSearchResultsHeader(query);
+    const list = document.getElementById('globalResults');
+    list.innerHTML = '<div class="small">Scanning mapped folders…</div>';
+    const concurrency = 6; let idx = 0, resultsCount = 0; list.innerHTML = '';
+
+    async function worker(){
+      while(idx < FOLDER_INDEX.length){
+        const i = idx++; const meta = FOLDER_INDEX[i];
+        try{
+          const files = isAdminSignedIn() ? await searchFolderPrivate(meta.folderId, query) : await searchFolderPublic(meta.folderId, query);
+          files.forEach(f => { appendSearchItem(list, meta, f); resultsCount++; });
+        }catch(e){ /* ignore per-folder errors */ }
+      }
+    }
+    const workers = Array.from({length: Math.min(concurrency, FOLDER_INDEX.length)}, worker);
+    await Promise.all(workers);
+    if(resultsCount === 0){ list.innerHTML = '<div class="small">No results.</div>'; }
+  }
 
   function escapeHtml(s){ return (s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c])); }
 
   /* ===== Router draw ===== */
-  function draw(){ const p=params(); const b=p.get('bakery'); const m=p.get('machine'); const c=p.get('cat'); const q=p.get('q'); if(q){ drawSearch(q); return; } if(!b){ drawHome(); return; } if(b && !m){ drawBakery(b); return; } if(b && m && !c){ drawMachine(b,m); return; } if(b && m && c){ drawCategory(b,m,c); return; } }
+  function draw(){
+    const p=params();
+    const b=p.get('bakery');
+    const m=p.get('machine');
+    const c=p.get('cat');
+    const q=p.get('q');
+
+    if(q){ drawSearch(q); return; }
+    if(!b){ drawHome(); return; }
+    if(b && !m){ drawBakery(b); return; }
+    if(b && m && !c){ drawMachine(b,m); return; }
+    if(b && m && c){ drawCategory(b,m,c); return; }
+  }
   window.addEventListener('load', draw);
 
   /* ===== Global search form ===== */
-  const gsForm=document.getElementById('globalSearchForm');
-  const gsInput=document.getElementById('globalSearchInput');
-  const clearBtn=document.getElementById('clearSearchBtn');
-  if(gsForm){ gsForm.addEventListener('submit',e=>{ e.preventDefault(); const q=(gsInput.value||'').trim(); if(q){ go({ q }); clearBtn.style.display=''; } else { go({}); clearBtn.style.display='none'; } }); }
-  if(clearBtn){ clearBtn.addEventListener('click',()=>{ gsInput.value=''; go({}); clearBtn.style.display='none'; }); }
+  const gsForm = document.getElementById('globalSearchForm');
+  const gsInput = document.getElementById('globalSearchInput');
+  const clearBtn = document.getElementById('clearSearchBtn');
+  if(gsForm){
+    gsForm.addEventListener('submit', (e)=>{
+      e.preventDefault(); const q = (gsInput.value||'').trim();
+      if(q){ go({ q }); clearBtn.style.display=''; } else { go({}); clearBtn.style.display='none'; }
+    });
+  }
+  if(clearBtn){ clearBtn.addEventListener('click', ()=>{ gsInput.value=''; go({}); clearBtn.style.display='none'; }); }
 
   /* ===== PIN gate ===== */
-  const PIN_CODE='2906';
-  const lock=document.getElementById('lockscreen');
-  const pinInput=document.getElementById('pinInput');
-  const pinBtn=document.getElementById('pinBtn');
-  const pinMsg=document.getElementById('pinMsg');
-  function checkPin(){ const val=(pinInput.value||'').trim(); if(val===PIN_CODE){ lock.style.display='none'; sessionStorage.setItem('unlocked','1'); pinMsg.style.display='none'; pinInput.value=''; } else { pinMsg.style.display='block'; lock.animate([{transform:'translateX(0px)'},{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(0px)'}],{duration:250}); setTimeout(()=>pinMsg.style.display='none',1800); } }
+  const PIN_CODE = '2906';
+  const lock = document.getElementById('lockscreen');
+  const pinInput = document.getElementById('pinInput');
+  const pinBtn = document.getElementById('pinBtn');
+  const pinMsg = document.getElementById('pinMsg');
+  function checkPin(){
+    const val=(pinInput.value||'').trim();
+    if(val === PIN_CODE){
+      lock.style.display = 'none';
+      sessionStorage.setItem('unlocked','1');
+      pinMsg.style.display = 'none';
+      pinInput.value='';
+    } else {
+      pinMsg.style.display = 'block';
+      lock.animate([
+        { transform:'translateX(0px)' },
+        { transform:'translateX(-6px)' },
+        { transform:'translateX(6px)' },
+        { transform:'translateX(-4px)' },
+        { transform:'translateX(4px)' },
+        { transform:'translateX(0px)' }
+      ], { duration: 250 });
+      setTimeout(()=>pinMsg.style.display='none', 1800);
+    }
+  }
   pinBtn.addEventListener('click', checkPin);
-  pinInput.addEventListener('keypress', e=>{ if(e.key==='Enter') checkPin(); });
-  if(sessionStorage.getItem('unlocked')==='1'){ lock.style.display='none'; }
+  pinInput.addEventListener('keypress', e=>{ if(e.key === 'Enter') checkPin(); });
+  if(sessionStorage.getItem('unlocked') === '1'){ lock.style.display = 'none'; }
   </script>
 </body>
 </html>
