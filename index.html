@@ -1,4 +1,6 @@
-<!doctype html>
+# Create a complete single-file HTML app and save it for download
+
+html = """<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -28,7 +30,7 @@
   .crumbs a{color:var(--brand);text-decoration:none}
   .crumbs .sep{opacity:.45;color:var(--muted)}
   .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0}
-  input[type="search"],select{padding:8px 10px;border-radius:10px;border:1px solid #cbd5e1;background:#fff;color:var(--ink)}
+  input[type=\"search\"],select{padding:8px 10px;border-radius:10px;border:1px solid #cbd5e1;background:#fff;color:var(--ink)}
   .btn{background:var(--brand);border:none;color:#fff;border-radius:10px;padding:8px 12px;cursor:pointer}
   .btn.ghost{background:transparent;color:var(--ink);border:1px solid #cbd5e1}
   .btn.badge{font-size:.78rem;padding:4px 8px;border-radius:999px}
@@ -65,70 +67,511 @@
 </head>
 <body>
   <header>
-    <div class="hwrap">
-      <div class="title">Panelto Bakery</div>
-      <form id="globalSearchForm" style="margin-left:auto;display:flex;gap:8px;align-items:center">
-        <input id="globalSearchInput" type="search" placeholder="Search all files…" aria-label="Search" style="padding:8px 10px;border-radius:10px;border:1px solid #cbd5e1;background:#fff;color:#1e293b;min-width:210px">
-        <button class="btn" type="submit">Search</button>
-        <button class="btn ghost" id="clearSearchBtn" type="button" style="display:none">Clear</button>
+    <div class=\"hwrap\">
+      <div class=\"title\">Panelto Bakery</div>
+      <form id=\"globalSearchForm\" style=\"margin-left:auto;display:flex;gap:8px;align-items:center\">
+        <input id=\"globalSearchInput\" type=\"search\" placeholder=\"Search all files…\" aria-label=\"Search\" style=\"padding:8px 10px;border-radius:10px;border:1px solid #cbd5e1;background:#fff;color:#1e293b;min-width:210px\">
+        <button class=\"btn\" type=\"submit\">Search</button>
+        <button class=\"btn ghost\" id=\"clearSearchBtn\" type=\"button\" style=\"display:none\">Clear</button>
       </form>
     </div>
   </header>
 
   <!-- PIN lock -->
-  <div id="lockscreen" style="position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#f7fafc;z-index:9999;">
-    <h2 style="margin-bottom:12px;font-family:Inter,sans-serif;color:#1e293b;">Enter Access Code</h2>
-    <input type="password" id="pinInput" placeholder="Code" style="padding:10px 14px;border:1px solid #cbd5e1;background:#fff;color:#1e293b;border-radius:8px;font-size:1rem;">
-    <button id="pinBtn" style="margin-top:12px;padding:10px 16px;border:none;border-radius:8px;background:#2563eb;color:#fff;font-size:1rem;cursor:pointer;">Unlock</button>
-    <p id="pinMsg" style="color:#dc2626;margin-top:10px;display:none;">Wrong code</p>
+  <div id=\"lockscreen\" style=\"position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#f7fafc;z-index:9999;\">
+    <h2 style=\"margin-bottom:12px;font-family:Inter,sans-serif;color:#1e293b;\">Enter Access Code</h2>
+    <input type=\"password\" id=\"pinInput\" placeholder=\"Code\" style=\"padding:10px 14px;border:1px solid #cbd5e1;background:#fff;color:#1e293b;border-radius:8px;font-size:1rem;\">
+    <button id=\"pinBtn\" style=\"margin-top:12px;padding:10px 16px;border:none;border-radius:8px;background:#2563eb;color:#fff;font-size:1rem;cursor:pointer;\">Unlock</button>
+    <p id=\"pinMsg\" style=\"color:#dc2626;margin-top:10px;display:none;\">Wrong code</p>
   </div>
 
   <!-- PREVIEW MODAL -->
-  <div id="previewBackdrop">
-    <div id="previewCard">
-      <div id="previewHead">
-        <div id="previewTitle" style="font-weight:600;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Preview</div>
-        <div style="display:flex;gap:8px;align-items:center">
-          <a id="previewDownload" class="btn" style="text-decoration:none;padding:6px 10px;border-radius:10px;background:#2563eb;color:#fff">Download</a>
-          <button id="previewClose" class="btn ghost" style="padding:6px 10px;border-radius:10px;border:1px solid #cbd5e1;background:#fff;color:#1e293b">Close</button>
+  <div id=\"previewBackdrop\">
+    <div id=\"previewCard\">
+      <div id=\"previewHead\">
+        <div id=\"previewTitle\" style=\"font-weight:600;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;\">Preview</div>
+        <div style=\"display:flex;gap:8px;align-items:center\">
+          <a id=\"previewDownload\" class=\"btn\" style=\"text-decoration:none;padding:6px 10px;border-radius:10px;background:#2563eb;color:#fff\">Download</a>
+          <button id=\"previewClose\" class=\"btn ghost\" style=\"padding:6px 10px;border-radius:10px;border:1px solid #cbd5e1;background:#fff;color:#1e293b\">Close</button>
         </div>
       </div>
-      <div id="previewBody"></div>
+      <div id=\"previewBody\"></div>
     </div>
   </div>
 
   <main>
-    <nav class="crumbs" id="crumbs"></nav>
-    <section id="view">
-      <div class="stack">
-        <a class="tile" href="?bakery=Bakery%201"><h2>Bakery 1</h2><p>Open</p></a>
-        <a class="tile" href="?bakery=Bakery%202"><h2>Bakery 2</h2><p>Open</p></a>
-        <a class="tile" href="?bakery=Bakery%203"><h2>Bakery 3</h2><p>Open</p></a>
+    <nav class=\"crumbs\" id=\"crumbs\"></nav>
+    <section id=\"view\">
+      <div class=\"stack\">
+        <a class=\"tile\" href=\"?bakery=Bakery%201\"><h2>Bakery 1</h2><p>Open</p></a>
+        <a class=\"tile\" href=\"?bakery=Bakery%202\"><h2>Bakery 2</h2><p>Open</p></a>
+        <a class=\"tile\" href=\"?bakery=Bakery%203\"><h2>Bakery 3</h2><p>Open</p></a>
       </div>
     </section>
   </main>
   <footer></footer>
 
   <!-- Google Identity Services + Google API client -->
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <script src="https://apis.google.com/js/api.js" async defer></script>
+  <script src=\"https://accounts.google.com/gsi/client\" async defer></script>
+  <script src=\"https://apis.google.com/js/api.js\" async defer></script>
 
   <script>
-  /* ========= CIJELI JAVASCRIPT DOLAZI OVDJE ========= */
-  /* ... (ovdje ide isti kompletan JS koji sam ti već slao, uključuje:
-       - CLIENT_ID, API_KEY, SCOPES
-       - MACHINES, FOLDERS, CATS
-       - fetchSheetTable (GViz + CSV fallback)
-       - renderWorksTable sa sortiranjem po "Completed On"
-       - openInlinePreview (image, pdf, video support)
-       - Google Drive public/admin listing
-       - Upload
-       - Global Search
-       - PIN Gate
-       - Auto-refresh helper) ...
-  */
+  /******** QUICK SETUP ********/
+  const CLIENT_ID = '937032004801-nfma3pp3fkkck4mfk094imqgmvduj7ih.apps.googleusercontent.com';
+  const API_KEY   = 'AIzaSyDnEsld28xzG1lQROwBO_ImDq2SxX4kcg8';
+  const SCOPES    = 'https://www.googleapis.com/auth/drive';
+
+  const MACHINES = {
+    'Bakery 1': ['Mixing','Fermentation','Fritsch','Proover','Oven','Cooler','Freezer'],
+    'Bakery 2': ['Mixing','Fermentation','Spiro','Scarifier','Retarder','Rademaker','Proover','Pattyn Tilting Conveyer','Packing','Oven','MIB','Freezer','Cooler','Baggers','AHU'],
+    'Bakery 3': ['Site 1 Packing','Site 2 Packing','Paletiser','Retail']
+  };
+
+  const FOLDERS = {
+    'Bakery 1': {
+      'Fritsch':      {documentation:'1uKMNjOdQltXZDMOrjs8nCDdQNdU0Dupw', works:'1M0NE6MtE0i-RNcckiFT8KCoMMwYdOdG_', electrical:'1RCWfvgcjDVCbutedlh3lyWjJ_kW5As9L', procedures:'1ismVYGrYFzwSbzxcoY_xki_KLhkdPpz0'},
+      'Mixing':       {documentation:'1YG_ASV5ZG_rcSMKfcpjfU42w52CISWOn', works:'1NSIQBwmVfrocWgnMNOifWPDEmGx4dsc1', electrical:'1MiaraFYz59FaoMY_P-83-x5nyiB5-oFM', procedures:'1LMez4eD_gbCg70NBXxo73YgjZHthzs6U'},
+      'Oven':         {documentation:'1t5dNT63qYVHzvH07UK4zqjs2c2jmdY0p', works:'1pu8f-rkqxH6x_q69X8xmCdEuCDambyjF', electrical:'1w1N5FbwoRPDYYkU3UvCINLece900dlMZ', procedures:'10sw8HYDASd0RrmgBysexwXnR45uKVpAB'},
+      'Fermentation': {documentation:'1_7M91rSDdjP955aa3kVws2ckd6fMqhd2', works:'1qo4xBLzKMWuQivKdP_ae1d-sLrhIUFuj', electrical:'1J8VL8DAIq1NSpa0TMoO_RHcS9gAv4kL3', procedures:'1-6fpU69xeUINtjJZs5or9RQ8ijt4wvl0'},
+      'Proover':      {documentation:'1teDMsKfN8BFiq4tI6ml2Z3zAYvq8TAp3', works:'1_UUtAmRYoUSRxypEIroIzNtXmdQ4V7lf', electrical:'1t46LgFl2vlCyWMRzt3nH4G8kUHjBYJa7', procedures:'1RPm3egkh7Lmx2TBxXps0v6npE-f54dJr'},
+      'Freezer':      {documentation:'1-7C36DI_QIi-SHLPjOte9MVtE35EG5fN', works:'11H4BO7p-kPX2_3kPWW2wRzLp6Hk9JtPi', electrical:'1dQIp2J1HMv0gLYG4_P8B3D3sAHYEUBk9', procedures:'1oiO_33P7kT34wVM2oEbKQ8PGQcvk0M5P'},
+      'Cooler':       {documentation:'1H7FGsJFHmKkarrIGsbW2OuoMKK69WfdZ', works:'15-7Vvr-4FyZ7zbfNUY17qh0Gi6Si-M02', electrical:'1MXGIDNGMstOwHEdrywqk-SRuJcf6WnJX', procedures:'1DGyNIYh62A82On7Q_TYeHnPMTZRdLsac'}
+    },
+    'Bakery 2': {
+      'Mixing':       {documentation:'1_kzKmh_I-eZVktunneF5ALqMIVBFSANG', works:'1hmMsIkNbsQVlwHkQ8Ow5KVTA3vDwSPlH', electrical:'1VBfupXPwz3Pxhum3RCOZdCylW0AK7Mf0', procedures:'1q8fLx5e0MuLJAVh10Ea7oAONPyyomXXA'},
+      'Fermentation': {documentation:'15r13fCr4CxGuK00Lbg-W__kjn5nET0Hj', works:'1wiSxlj8bkQ13lU3G701ztg8gNqiI6fyg', electrical:'1UOzZbFjwfCtQcWG04-xXN6vdJuNp0zwh', procedures:'1kN7MMl9TE0yCZ-J42860MWz4ZmGWF7Dw'},
+      'Spiro':        {documentation:'1JZXSmYawAyyXvWT2jnUovaqX3D-fJ0EH', works:'1Q35Y56uV4yjwOr1140Eyj8TpOPMalvpc', electrical:'1QcxnK2LjNhSvv66_ae3kPV8K6vQfu4fI', procedures:'1NRoHEF1MesnbjzA1Cg5Q3vw1TtKhJSYD'},
+      'Scarifier':    {documentation:'1m6I1Og91ma9-FEf4uGKqg5OZ-sNJJLrG', works:'1yb5vRkm1fbluscJ41RNIv2_uFIMVHjGE', electrical:'1L3Pq0cBlKZ6SaTpBr4HANygvz4p4hmhI', procedures:'1Rxgeet6GRX_aHcfFJhNN8jK1hDH2m4Mg'},
+      'Retarder':     {documentation:'1jg0FvErsRrnz_mOOeu3mCJAwX3AlJ26W', works:'1XqlFXZmukKz-tgVXoDMsXICQFgDcUVZE', electrical:'1i_azmPjg2oz5-4X8gLEbugT1dJ3-AzwF', procedures:'1ueMJa-EF_RMUvqQy-ETP1wkSswoAQkds'},
+      'Rademaker':    {documentation:'1QRlaG20Rtc30iaKwdYbWHrNZId7k9URq', works:'1Li4ckJxG2qPOP8NQ13pDeHOgBo9Oig_H', electrical:'1qYv1EHkzzzdEMRT6aBFUYmNLHDVDcTUS', procedures:'1rPA3eIXUkBJyZqhQifAbYPcBDsbTa7EP'},
+      'Proover':      {documentation:'1WcQWdVOYqqobaD8uoc3s5l1FCw8xkHim', works:'1J7FF4Rcmhpme0ltz0c6cmFvtNPCHHFSk', electrical:'1Az4ig6kyEK-ubVenXNJOmsTwTqezQDQ1', procedures:'1JuNU5TJvIW3mDHCkWHYbdqVBWlAmj83C'},
+      'Pattyn Tilting Conveyer':{documentation:'1mI6mpPWbIRmOiwbl9iQdUvF9SHdISij2', works:'1QQH0oYPbNr_R1wj8VxIMwlFvW0x4zza2', electrical:'1zJ8v5-ghuO7x9RbtttIbVttj7e9b5Q-i', procedures:'1wj2BtkPnTQvEuyluzseBXxrkK9OGB7in'},
+      'Packing':      {documentation:'1tTpmHrNiK3eO-8UME6amkBGcBCqogOoG', works:'1jxDJO0hSSHQ-8KIQSQUcCmocq0jyGQWb', electrical:'14PUHHjr0GOtNaMQPTADKCxj7pZCa9Do5', procedures:'1myVmfW9HnlfRdM-FMeAx1REqaiSBhqFs'},
+      'Oven':         {documentation:'1GHVtXJi0KMPdIf7z_W0SGU0BiudjQPSO', works:'1wOn_2XRKn9WP8PK8quuL9fGxS56-GMJp', electrical:'1DGl4po1gULH2gQkYC_4I5eWemomZf_D8', procedures:'1mknL-hrBx3AbPbpMElftIyKkqqs1jwnM'},
+      'MIB':          {documentation:'1twize6Omq1WUxt631UIlvXoWG6Kmy-XS', works:'1gbII6qemYbyQVSjGivbn8_Ku6cEFX1pR', electrical:'1c4vr73nrDie8sGfGz2VqvMMYhGh1z-Fn', procedures:'1NI0RK4Mp6zeyJ0R1PFfam_auoHJAMRfs'},
+      'Freezer':      {documentation:'1C4mCKM1DkXJwD-gVMf4spO8REjc6LDTC', works:'1vnbdMMISy38_SiJpVOuVoyC0UUEDaZaV', electrical:'1xqcwh5GvmZgSkCyffzQNINw4P_91W4Df', procedures:'1X14Fgcb8rESKIGQNXVo1bVT9cYn_f4s6'},
+      'Cooler':       {documentation:'1tEemK1qcOlAn55CLOCWyUgS4PdASNbQ5', works:'1CUMUsoIRNl0PO8mQoK0-EmgHxMFuZLXI', electrical:'1dHbBL4-iVcekRBlTIr7jdUz17kL8MZUj', procedures:'1fcL8I_FZqD_JEmiuerWKyGN_8TJo09hU'},
+      'Baggers':      {documentation:'1llq6U95hQc3NcGg1JDqOBKbmxJxsYcUR', works:'1HrGgPLFF4sUmc2FXsBlr_KNgdiEmnyUJ', electrical:'1J1W8STCRjfGfv4q91ZyxkyKiEUev_cAA', procedures:'1GewCaKsiOLEukax4ZIZTSP42k-WFR280'},
+      'AHU':          {documentation:'1QMKYSOQ-N0LVANk8MZNiB07DTKI-QC7U', works:'1tSXor0e_YtcabRFabUO_AOhEMjzTttuh', electrical:'1m3CYpvbWyqJBX022oiOwJNcBayqOFF1a', procedures:'1PcPbWgBbTDnPZAidlPI-_T4-fpJP2q0o'}
+    },
+    'Bakery 3': {
+      'Site 1 Packing': {documentation:'1J210oJpvaS2VhXOMaQm8oXAFbCW8FDa7', works:'1emCk6hQQF25eMn8D7LyJD4uyqt4vFfQW', electrical:'1mG4EyGxk4Be4nbV_WW316FqzuTl1QCR-', procedures:'1DJwbexql1dakzKXYDvofvFam9vTuikS'},
+      'Site 2 Packing': {documentation:'1OovqnA9jsAdFJSxeeWj9Dr9K4VUya5yi', works:'15C_uMSqzoJjdSpBfE6xVpBEbiWeBgZn-', electrical:'17pLXNKAOomUOwo642WazWVboOwJiZPCl', procedures:'1u1Ipt5v375gwd8CufIkc3TckKTQA-dKE'},
+      'Paletiser':      {documentation:'1exaNF6HaJVw4D8ODVdDDiurYhxGzmn-8', works:'1Nd3vqzlvIw2reDo2ELeCw5q_UC5YRR8y', electrical:'1r8lSFtNAwSoMpPSVouj7Jv39WeL5xmXw', procedures:'1CNgEId5CKxNlMcwmZxJsIG0DQB266s5Y'},
+      'Retail':         {documentation:'1tghnGJ1e09FnOwhTV1UKZpSl-XRT62On', works:'1hoUvzxjpA6z2TTggwiSj-7CMfkQ40rCB', electrical:'1QIkmIstBW4RKryafamYp38Jnr3DLLtlm', procedures:'1soZAoyN9pp4xTkKcQczMH37Yqx8t48EA'}
+    }
+  };
+
+  const CATS = {
+    documentation: { title:'Documentation', color:'c1', desc:'User manuals & technical docs' },
+    works:         { title:'Work History', color:'c2', desc:'Repairs, interventions' },
+    electrical:    { title:'Electrical Diagrams', color:'c3', desc:'Wiring & schematics' },
+    procedures:    { title:'Procedures', color:'c4', desc:'SOPs & guides' }
+  };
+
+  const WORKS_SHEETS = {
+    'Bakery 1': {
+      'Fritsch': {
+        sheetId: '1j3KX2qGjFj9tOHWZLKY_xJMV70wBr5KQfZab0-TYw0k',
+        sheetName: 'Work History without routines',
+        gid: '1835750486'
+      }
+    },
+    'Bakery 2': {},
+    'Bakery 3': {}
+  };
+
+  /* ===== Utilities ===== */
+  function params(){ return new URLSearchParams(location.search); }
+  function go(obj){ const u=new URL(location.href); u.search=new URLSearchParams(obj).toString(); history.pushState({},'',u); draw(); }
+  window.addEventListener('popstate', draw);
+
+  function crumbsSet(items){ const el=document.getElementById('crumbs'); el.innerHTML=''; items.forEach((it,i)=>{ const a=document.createElement('a'); a.href='javascript:void(0)'; a.textContent=it.label; a.onclick=()=>{ go(it.to||{}); }; el.appendChild(a); if(i<items.length-1){ const s=document.createElement('span'); s.className='sep'; s.textContent='›'; el.appendChild(s); } }); }
+
+  function drawHome(){ crumbsSet([{label:'Home'}]); const view=document.getElementById('view'); view.innerHTML=''; const wrap=document.createElement('div'); wrap.className='stack'; ['Bakery 1','Bakery 2','Bakery 3'].forEach(b=>{ const a=document.createElement('a'); a.className='tile'; a.href=`?bakery=${encodeURIComponent(b)}`; a.innerHTML=`<h2>${b}</h2><p>Open</p>`; wrap.appendChild(a); }); view.appendChild(wrap); }
+
+  function drawBakery(b){ crumbsSet([{label:'Home',to:{}},{label:b,to:{bakery:b}}]); const view=document.getElementById('view'); view.innerHTML=''; const machines = MACHINES[b]||[]; if(!machines.length){ drawMachine(b,'—'); return; } const wrap=document.createElement('div'); wrap.className='stack'; machines.forEach(m=>{ const a=document.createElement('a'); a.className='tile'; a.href=`?bakery=${encodeURIComponent(b)}&machine=${encodeURIComponent(m)}`; a.innerHTML=`<h2>${m}</h2><p>Open</p>`; wrap.appendChild(a); }); view.appendChild(wrap); }
+
+  function drawMachine(b,m){ crumbsSet([{label:'Home',to:{}},{label:b,to:{bakery:b}},{label:m,to:{bakery:b,machine:m}}]); const view=document.getElementById('view'); view.innerHTML=''; const card=document.createElement('div'); card.className='card'; const h=document.createElement('h3'); h.textContent=`${b} › ${m}`; card.appendChild(h); const grid=document.createElement('div'); grid.className='grid'; Object.entries(CATS).forEach(([k,meta])=>{ const a=document.createElement('a'); a.className=`tile square ${meta.color}`; a.href=`?bakery=${encodeURIComponent(b)}&machine=${encodeURIComponent(m)}&cat=${encodeURIComponent(k)}`; a.innerHTML=`<h2>${meta.title}</h2><p>${meta.desc}</p>`; grid.appendChild(a); }); card.appendChild(grid); document.getElementById('view').appendChild(card); }
+
+  /* ===== Preview helpers (video/pdf/image) ===== */
+  const previewBackdrop = document.getElementById('previewBackdrop');
+  const previewBody = document.getElementById('previewBody');
+  const previewTitleEl = document.getElementById('previewTitle');
+  const previewCloseBtn= document.getElementById('previewClose');
+  const previewDownload= document.getElementById('previewDownload');
+  function showPreview(){ previewBackdrop.style.display='block'; }
+  function clearPreviewBody(){ try{ if(previewBody.dataset.blobUrl){ URL.revokeObjectURL(previewBody.dataset.blobUrl); previewBody.dataset.blobUrl=''; } }catch{} previewBody.innerHTML=''; }
+  function hidePreview(){ previewBackdrop.style.display='none'; clearPreviewBody(); }
+  previewBackdrop.addEventListener('click', (e)=>{ if(e.target===previewBackdrop) hidePreview(); });
+  previewCloseBtn.addEventListener('click', hidePreview);
+  window.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && previewBackdrop.style.display==='block') hidePreview(); });
+  function isPdf(mime){ return (mime||'').toLowerCase().includes('pdf') || /\\.pdf$/i.test(mime||''); }
+  function publicDownloadUrl(fileId){ return `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media&key=${API_KEY}`; }
+  async function fetchPrivateBlob(fileId){ const r=await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,{ headers:{'Authorization':'Bearer '+accessToken} }); if(!r.ok) throw new Error('Fetch failed '+r.status); return await r.blob(); }
+
+  async function openInlinePreview(f,isAdmin){
+    previewTitleEl.textContent = f.name || 'Preview';
+    previewDownload.href = isAdmin ? `https://www.googleapis.com/drive/v3/files/${f.id}?alt=media` : publicDownloadUrl(f.id);
+    const mime = (f.mimeType||'').toLowerCase();
+    const isImage = mime.startsWith('image/');
+    const isVideo = mime.startsWith('video/') || /\\.(mp4|webm|mov|m4v|ogg|avi|mkv)$/i.test(f.name||'');
+    const drivePreview = `https://drive.google.com/file/d/${f.id}/preview`;
+
+    if (isVideo){
+      if (isAdmin){
+        try{ const blob = await fetchPrivateBlob(f.id); const url = URL.createObjectURL(blob); previewBody.dataset.blobUrl=url; const vid=document.createElement('video'); vid.src=url; vid.controls=true; vid.playsInline=true; vid.preload='metadata'; previewBody.innerHTML=''; vid.style.flex='1 1 auto'; vid.style.width='100%'; vid.style.height='100%'; previewBody.appendChild(vid); showPreview(); return; }catch(e){ console.warn('Video blob preview failed, using Drive iframe', e); }
+      }
+      const vid=document.createElement('video'); vid.src=publicDownloadUrl(f.id); vid.controls=true; vid.playsInline=true; vid.preload='metadata'; vid.addEventListener('error',()=>{ const iframe=document.createElement('iframe'); iframe.src=drivePreview; iframe.style.width='100%'; iframe.style.height='100%'; clearPreviewBody(); previewBody.appendChild(iframe); },{once:true}); clearPreviewBody(); vid.style.flex='1 1 auto'; vid.style.width='100%'; vid.style.height='100%'; previewBody.appendChild(vid); showPreview(); return;
+    }
+
+    if (isPdf(mime) || /\\.pdf$/i.test(f.name||'') || isImage){
+      if (isAdmin){
+        try{ const blob = await fetchPrivateBlob(f.id); const url=URL.createObjectURL(blob); previewBody.dataset.blobUrl=url; const iframe=document.createElement('iframe'); iframe.src=url; iframe.style.width='100%'; iframe.style.height='100%'; clearPreviewBody(); previewBody.appendChild(iframe); showPreview(); return; }catch(e){ console.warn('Blob preview failed, fallback to Drive preview'); }
+      }
+      const iframe=document.createElement('iframe'); iframe.src=drivePreview; iframe.style.width='100%'; iframe.style.height='100%'; clearPreviewBody(); previewBody.appendChild(iframe); showPreview(); return;
+    }
+
+    window.open(f.webViewLink || `https://drive.google.com/file/d/${f.id}/view`, '_blank');
+  }
+
+  /* ===== Drive integration ===== */
+  let accessToken=null,gapiReady=false;
+  async function ensureGapi(){ if(gapiReady) return; await new Promise(r=>gapi.load('client',r)); await gapi.client.init({apiKey:API_KEY,discoveryDocs:['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest']}); gapiReady=true; }
+  async function ensureAuth(){ if(accessToken) return accessToken; await ensureGapi(); return new Promise((res,rej)=>{ const c=google.accounts.oauth2.initTokenClient({ client_id:CLIENT_ID, scope:SCOPES, callback:r=>{ if(r&&r.access_token){accessToken=r.access_token;res(accessToken);} else rej(new Error('No token')); } }); c.requestAccessToken({prompt:'consent'}); }); }
+  function folderIdFor(b,m,cat){ return FOLDERS?.[b]?.[m]?.[cat] || null; }
+
+  /* ===== WORK HISTORY (Google Sheets) ===== */
+  async function fetchSheetTable(sheetId, sheetName, gid){
+    if (sheetName){
+      const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}&_=${Date.now()}`;
+      const res = await fetch(url);
+      if (res.ok){
+        const text = await res.text();
+        const start = text.indexOf('{'); const end = text.lastIndexOf('}');
+        if (start === -1 || end === -1 || end <= start) throw new Error('Invalid GViz response');
+        const jsonText = text.substring(start, end + 1);
+        const data = JSON.parse(jsonText);
+        const cols = (data.table.cols||[]).map(c=>c.label || c.id || '');
+        const rows = (data.table.rows||[]).map(r => (r.c||[]).map(c => (c ? (c.f || c.v || '') : '')));
+        return { headers: cols, rows };
+      }
+      if (!gid) throw new Error('Sheet fetch failed '+res.status);
+    }
+    if (gid){
+      const url = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&id=${sheetId}&gid=${gid}&_=${Date.now()}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('CSV fetch failed '+res.status);
+      const text = await res.text();
+      const rows = []; let row=[], inQuotes=false, field='';
+      for (let i=0;i<text.length;i++){
+        const ch=text[i], next=text[i+1];
+        if(inQuotes){ if(ch==='\"' && next==='\"'){field+='\"';i++;} else if(ch==='\"'){inQuotes=false;} else {field+=ch;} }
+        else { if(ch==='\"'){inQuotes=true;} else if(ch===','){row.push(field);field='';} else if(ch==='\\n'){row.push(field);rows.push(row);row=[];field='';} else if(ch==='\\r'){/* ignore */} else {field+=ch;} }
+      }
+      if (field.length || row.length){ row.push(field); rows.push(row); }
+      const headers = rows.shift() || [];
+      return { headers, rows };
+    }
+    throw new Error('No sheetName or gid configured.');
+  }
+
+  function parseDateAny(s){
+    if(!s) return null;
+    const t = (''+s).trim();
+    const norm = t.replace(/\\./g,'/');
+    const d = new Date(norm);
+    if(!isNaN(d)) return d;
+    const m = norm.match(/^([0-3]?\\d)[\\/\\-]([01]?\\d)[\\/\\-](\\d{2,4})(?:\\s+(\\d{1,2}):(\\d{2})(?::(\\d{2}))?)?$/);
+    if(m){
+      const dd=+m[1], mm=+m[2]-1, yyyy=(+m[3] < 100 ? 2000+ +m[3] : +m[3]);
+      const hh=+(m[4]||0), mi=+(m[5]||0), ss=+(m[6]||0);
+      const d2=new Date(yyyy,mm,dd,hh,mi,ss);
+      if(!isNaN(d2)) return d2;
+    }
+    return null;
+  }
+
+  function renderWorksTable(container, table, adminSheetId){
+    container.innerHTML='';
+    const bar=document.createElement('div'); bar.className='toolbar';
+    const search=document.createElement('input'); search.type='search'; search.placeholder='Search…';
+    bar.append(search);
+
+    // Admin-only controls
+    const adminBox=document.createElement('div'); adminBox.style.marginLeft='auto'; adminBox.style.display=accessToken ? 'flex' : 'none'; adminBox.style.gap='8px'; adminBox.style.alignItems='center';
+    const dlBtn=document.createElement('button'); dlBtn.className='btn ghost'; dlBtn.textContent='Download CSV';
+    const openSheet=document.createElement('a'); openSheet.className='btn ghost'; openSheet.target='_blank'; openSheet.rel='noopener'; openSheet.textContent='Open in Google Sheets (Admin)'; openSheet.href = adminSheetId ? `https://docs.google.com/spreadsheets/d/${adminSheetId}/edit` : '#';
+    adminBox.append(dlBtn, openSheet); bar.append(adminBox);
+
+    container.appendChild(bar);
+
+    const wrap=document.createElement('div'); wrap.className='table-wrap';
+    const tbl=document.createElement('table'); tbl.className='data'; wrap.appendChild(tbl); container.appendChild(wrap);
+    const thead=document.createElement('thead'); const trh=document.createElement('tr'); thead.appendChild(trh); tbl.appendChild(thead);
+    const tbody=document.createElement('tbody'); tbl.appendChild(tbody);
+
+    const headers = table.headers.slice();
+    let completedColIdx = -1;
+    headers.forEach((h, idx)=>{
+      const th=document.createElement('th'); th.textContent = h || `Col ${idx+1}`; th.classList.add('th-sortable');
+      const key = (h||'').toLowerCase();
+      if(key.includes('completed')){ th.classList.add('col-date'); completedColIdx = idx; }
+      else if(key.includes('job description')){ th.classList.add('col-desc'); }
+      else if(key.includes('action taken') || key.includes('actions')){ th.classList.add('col-action'); }
+      else if(key.includes('priority')||key.includes('status')){ th.classList.add('col-narrow'); }
+      const dir=document.createElement('span'); dir.className='dir'; dir.textContent='↕'; th.appendChild(dir);
+      th.addEventListener('click', ()=> sortBy(idx)); trh.appendChild(th);
+    });
+
+    let currentRows = table.rows.slice();
+    let sortCol = completedColIdx >= 0 ? completedColIdx : -1;
+    let sortDir = 1; // 1 asc (oldest→newest), -1 desc
+
+    function renderBody(){
+      const q=(search.value||'').toLowerCase();
+      tbody.innerHTML='';
+      currentRows.forEach(r=>{
+        if(q){ const hit=r.some(v=>String(v||'').toLowerCase().includes(q)); if(!hit) return; }
+        const tr=document.createElement('tr');
+        r.forEach((v)=>{ const td=document.createElement('td'); td.textContent = v==null ? '' : String(v); tr.appendChild(td); });
+        tbody.appendChild(tr);
+      });
+    }
+
+    function sortBy(colIdx){
+      if(sortCol === colIdx){ sortDir *= -1; } else { sortCol = colIdx; sortDir = (colIdx===completedColIdx?1:1); }
+      const headerText = (headers[colIdx]||'').toLowerCase();
+      const isDateCol = (colIdx===completedColIdx) || headerText.includes('date') || headerText.includes('completed');
+      currentRows.sort((a,b)=>{
+        let va=a[colIdx], vb=b[colIdx];
+        if(isDateCol){
+          const da=parseDateAny(va); const db=parseDateAny(vb);
+          const na=da?da.getTime():-Infinity; const nb=db?db.getTime():-Infinity;
+          if(na<nb) return -1*sortDir; if(na>nb) return 1*sortDir; return 0;
+        }
+        va = (va??'').toString().toLowerCase(); vb=(vb??'').toString().toLowerCase();
+        if(va<vb) return -1*sortDir; if(va>vb) return 1*sortDir; return 0;
+      });
+      [...trh.children].forEach((th,i)=>{ const span=th.querySelector('.dir'); if(!span) return; span.textContent = (i===sortCol ? (sortDir===1?'↑':'↓') : '↕'); });
+      renderBody();
+    }
+
+    dlBtn.onclick = ()=>{
+      const esc = (s)=>('\"'+String(s??'').replace(/\"/g,'\"\"')+'\"');
+      const lines = [ headers.map(esc).join(','), ...currentRows.map(row=>row.map(esc).join(',')) ].join('\\r\\n');
+      const blob=new Blob([lines],{type:'text/csv'}); const url=URL.createObjectURL(blob);
+      const a=document.createElement('a'); a.href=url; a.download='work_history.csv'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),3000);
+    };
+
+    if (completedColIdx>=0){ sortBy(completedColIdx); } else { renderBody(); }
+
+    search.addEventListener('input', renderBody);
+  }
+
+  async function drawWorksSheetView(bakery, machine, container){
+    const entry = WORKS_SHEETS?.[bakery]?.[machine];
+    if(!entry || !entry.sheetId){ container.innerHTML='<div class=\"small\">No Google Sheet configured for this machine. Showing Drive folder instead.</div>'; return null; }
+    try{
+      container.innerHTML = '<div class=\"small\">Loading Work History…</div>';
+      const table = await fetchSheetTable(entry.sheetId, entry.sheetName||'Sheet1', entry.gid);
+      renderWorksTable(container, table, entry.sheetId);
+      return true;
+    }catch(e){
+      container.innerHTML = `<div class=\"small\">Failed to load Work History: ${escapeHtml(e.message||String(e))}</div>`;
+      return true;
+    }
+  }
+
+  /* ===== Category view ===== */
+  function drawCategory(b,m,catKey){
+    const cat=CATS[catKey]; if(!cat){ go({bakery:b,machine:m}); return; }
+    crumbsSet([{label:'Home',to:{}},{label:b,to:{bakery:b}},{label:m,to:{bakery:b,machine:m}},{label:cat.title,to:{bakery:b,machine:m,cat:catKey}}]);
+    const view=document.getElementById('view'); view.innerHTML='';
+    const card=document.createElement('div'); card.className='card';
+    const h=document.createElement('h3'); h.textContent=`${b} › ${m} › ${cat.title}`; card.appendChild(h);
+
+    const fid = folderIdFor(b,m,catKey);
+    const hint=document.createElement('div'); hint.className='small'; card.appendChild(hint);
+    function refreshHint(){ if(!fid){ hint.style.display=''; hint.innerHTML='⚠️ Set Drive folder ID in <code>FOLDERS</code>.'; } else if(accessToken){ hint.style.display=''; hint.innerHTML=`Folder ID: <code>${escapeHtml(fid)}</code>`; } else { hint.style.display='none'; hint.innerHTML=''; } }
+    refreshHint();
+
+    const bar=document.createElement('div'); bar.className='toolbar';
+    const search=document.createElement('input'); search.type='search'; search.placeholder='Search files';
+    const file=document.createElement('input'); file.type='file'; file.accept='application/pdf,image/*,video/*';
+    const up=document.createElement('button'); up.className='btn'; up.textContent='Upload';
+    const refresh=document.createElement('button'); refresh.className='btn ghost'; refresh.textContent='Refresh';
+    const adminBtn=document.createElement('button'); adminBtn.className='btn ghost'; adminBtn.textContent='Admin: Sign in';
+    bar.append(adminBtn,search,file,up,refresh); card.appendChild(bar);
+
+    const list=document.createElement('div'); list.className='list'; card.appendChild(list);
+    view.appendChild(card);
+
+    file.style.display='none'; up.style.display='none';
+
+    if (catKey==='works'){
+      const sheetEntry = WORKS_SHEETS?.[b]?.[m];
+      if (sheetEntry && sheetEntry.sheetId){
+        file.style.display='none'; up.style.display='none'; refresh.style.display='none'; adminBtn.style.display='';
+        drawWorksSheetView(b,m,list).catch(e=>{ list.innerHTML = `<div class=\"small\">Failed to load Work History: ${escapeHtml(e.message||String(e))}</div>`; });
+        return;
+      }
+    }
+
+    async function publicListFiles(){
+      list.innerHTML='<div class=\"small\">Loading…</div>';
+      try{
+        if(!fid){ list.innerHTML='<div class=\"small\">Set Drive folder ID.</div>'; return; }
+        const params=new URLSearchParams({
+          q:`'${fid}' in parents and trashed=false`,
+          fields:'files(id,name,modifiedTime,mimeType,webViewLink)',
+          orderBy:'modifiedTime desc', pageSize:'100', key:API_KEY,
+          supportsAllDrives:'true', includeItemsFromAllDrives:'true'
+        });
+        const res=await fetch('https://www.googleapis.com/drive/v3/files?'+params.toString());
+        if(!res.ok){ const j=await res.json().catch(()=>({})); throw new Error(j.error?.message||('HTTP '+res.status)); }
+        const data=await res.json();
+        let items=data.files||[];
+        const s=(search.value||'').toLowerCase(); if(s) items=items.filter(f=>(f.name||'').toLowerCase().includes(s));
+        if(!items.length){ list.innerHTML='<div class=\"small\">No files yet.</div>'; return; }
+        list.innerHTML='';
+        items.forEach(f=>{
+          const row=document.createElement('div'); row.className='item';
+          const title=document.createElement('a'); title.className='title'; title.href='#';
+          title.onclick=(e)=>{ e.preventDefault(); openInlinePreview(f,false); };
+          const when=f.modifiedTime?new Date(f.modifiedTime).toLocaleString():'';
+          title.innerHTML=`<div><strong>${escapeHtml(f.name)}</strong><div class=\"meta\">${escapeHtml(f.mimeType||'')} • ${escapeHtml(when)}</div></div>`;
+          const dl=document.createElement('a'); dl.className='icon-btn'; dl.href=publicDownloadUrl(f.id); dl.target='_blank'; dl.rel='noopener';
+          dl.innerHTML=`<svg viewBox=\"0 0 24 24\" fill=\"none\"><path d=\"M12 3v10m0 0 4-4m-4 4-4-4M4 20h16\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>`;
+          row.append(title,dl); list.appendChild(row);
+        });
+      }catch(e){ list.innerHTML=`<div class=\"small\">Public list error: ${escapeHtml(e.message||String(e))}</div>`; }
+    }
+
+    async function privateListFiles(){
+      list.innerHTML='<div class=\"small\">Loading…</div>';
+      try{
+        if(!fid){ list.innerHTML='<div class=\"small\">Set Drive folder ID.</div>'; return; }
+        const q=`'${fid}' in parents and trashed=false`;
+        const res=await gapi.client.drive.files.list({ q, fields:'files(id,name,modifiedTime,mimeType,webViewLink)', orderBy:'modifiedTime desc', pageSize:100, supportsAllDrives:true, includeItemsFromAllDrives:true });
+        let items=res.result.files||[];
+        const s=(search.value||'').toLowerCase(); if(s) items=items.filter(f=>(f.name||'').toLowerCase().includes(s));
+        if(!items.length){ list.innerHTML='<div class=\"small\">No files yet.</div>'; return; }
+        list.innerHTML='';
+        items.forEach(f=>{
+          const row=document.createElement('div'); row.className='item';
+          const title=document.createElement('a'); title.className='title'; title.href='#'; title.onclick=(e)=>{ e.preventDefault(); openInlinePreview(f,true); };
+          const when=f.modifiedTime?new Date(f.modifiedTime).toLocaleString():'';
+          title.innerHTML=`<div><strong>${escapeHtml(f.name)}</strong><div class=\"meta\">${escapeHtml(f.mimeType||'')} • ${escapeHtml(when)}</div></div>`;
+          const right=document.createElement('div'); right.style.display='flex'; right.style.gap='8px';
+          const dl=document.createElement('a'); dl.className='icon-btn'; dl.href=`https://www.googleapis.com/drive/v3/files/${f.id}?alt=media`; dl.target='_blank'; dl.rel='noopener';
+          dl.innerHTML=`<svg viewBox=\"0 0 24 24\" fill=\"none\"><path d=\"M12 3v10m0 0 4-4m-4 4-4-4M4 20h16\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>`;
+          const del=document.createElement('button'); del.className='icon-btn';
+          del.innerHTML=`<svg viewBox=\"0 0 24 24\" fill=\"none\"><path d=\"M6 7h12M10 7v12m4-12v12M9 7l1-2h4l1 2M6 7l1 14h10l1-14\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>`;
+          del.onclick=async()=>{ if(!confirm('Delete file?')) return; try{ await gapi.client.drive.files.delete({fileId:f.id}); privateListFiles(); } catch(e){ alert('Delete failed: '+(e.result?.error?.message||e.message)); } };
+          right.append(dl, del); row.append(title, right); list.appendChild(row);
+        });
+      }catch(e){ list.innerHTML=`<div class='small'>Error: ${escapeHtml(e.message||String(e))}</div>`; }
+    }
+
+    publicListFiles();
+    refresh.onclick=publicListFiles; search.oninput=publicListFiles;
+
+    adminBtn.onclick = async ()=>{
+      try{
+        await ensureAuth();
+        refreshHint(); file.style.display=''; up.style.display=''; refresh.onclick=privateListFiles; search.oninput=privateListFiles; adminBtn.style.display='none';
+        await privateListFiles();
+        const signOut=document.createElement('button'); signOut.className='btn ghost'; signOut.textContent='Admin: Sign out';
+        signOut.onclick=()=>{ accessToken=null; alert('Signed out. Refresh to return to public mode.'); location.reload(); };
+        bar.append(signOut);
+      }catch(e){ alert('Sign-in failed: '+(e.message||String(e))); }
+    };
+
+    up.onclick = async ()=>{
+      try{
+        if(!fid){ alert('Set Drive folder ID in FOLDERS.'); return; }
+        if(!file.files||!file.files[0]){ alert('Choose a file'); return; }
+        await ensureAuth();
+        up.disabled=true; up.textContent='Uploading…';
+        const newId = await uploadToDrive(fid, file.files[0]);
+        await gapi.client.drive.permissions.create({ fileId:newId, resource:{ type:'anyone', role:'reader' } });
+        file.value=''; setTimeout(()=>privateListFiles().catch(console.error),300);
+      }catch(e){ alert('Upload failed: '+(e.message||String(e))); }
+      finally{ up.disabled=false; up.textContent='Upload'; }
+    };
+  }
+
+  /* ===== Global search across mapped folders ===== */
+  function buildFolderIndex(){ const out=[]; for(const bakery of Object.keys(FOLDERS||{})){ const machinesObj=FOLDERS[bakery]||{}; for(const machine of Object.keys(machinesObj)){ const cats=machinesObj[machine]||{}; for(const catKey of Object.keys(cats)){ const folderId=cats[catKey]; if(folderId){ out.push({ bakery, machine, cat:catKey, folderId }); } } } } return out; }
+  const FOLDER_INDEX = buildFolderIndex();
+  function isAdminSignedIn(){ return !!accessToken; }
+  function escapeQueryForDrive(name){ return (name||'').replace(/'/g, "\\'"); }
+
+  async function searchFolderPublic(folderId, query){ const q = `'${folderId}' in parents and trashed=false and name contains '${escapeQueryForDrive(query)}'`; const params=new URLSearchParams({ q, fields:'files(id,name,modifiedTime,mimeType,webViewLink,parents)', orderBy:'modifiedTime desc', pageSize:'50', key:API_KEY, supportsAllDrives:'true', includeItemsFromAllDrives:'true' }); const res=await fetch('https://www.googleapis.com/drive/v3/files?'+params.toString()); if(!res.ok){ const j=await res.json().catch(()=>({})); throw new Error(j.error?.message||('HTTP '+res.status)); } const data=await res.json(); return data.files||[]; }
+  async function searchFolderPrivate(folderId, query){ const q = `'${folderId}' in parents and trashed=false and name contains '${escapeQueryForDrive(query)}'`; const res=await gapi.client.drive.files.list({ q, fields:'files(id,name,modifiedTime,mimeType,webViewLink,parents)', orderBy:'modifiedTime desc', pageSize:50, supportsAllDrives:true, includeItemsFromAllDrives:true }); return res.result.files||[]; }
+
+  function renderSearchResultsHeader(query){ const view=document.getElementById('view'); view.innerHTML=''; const card=document.createElement('div'); card.className='card'; const h=document.createElement('h3'); h.textContent=`Search results for “${query}”`; card.appendChild(h); const small=document.createElement('div'); small.className='small'; small.textContent = isAdminSignedIn() ? 'Searching all mapped Drive folders (admin mode)…' : 'Searching public files in all mapped Drive folders…'; card.appendChild(small); const list=document.createElement('div'); list.className='list'; list.id='globalResults'; card.appendChild(list); view.appendChild(card); }
+
+  function appendSearchItem(container, meta, f){ const row=document.createElement('div'); row.className='item'; const title=document.createElement('a'); title.className='title'; title.href='#'; title.onclick=(e)=>{ e.preventDefault(); openInlinePreview(f, isAdminSignedIn()); }; const when=f.modifiedTime?new Date(f.modifiedTime).toLocaleString():''; const path = `${meta.bakery} › ${meta.machine} › ${CATS[meta.cat]?.title||meta.cat}`; title.innerHTML=`<div><strong>${escapeHtml(f.name)}</strong><div class=\"meta\">${escapeHtml(path)} • ${escapeHtml(f.mimeType||'')} • ${escapeHtml(when)}</div></div>`; const dl=document.createElement('a'); dl.className='icon-btn'; dl.href = isAdminSignedIn() ? `https://www.googleapis.com/drive/v3/files/${f.id}?alt=media` : `https://www.googleapis.com/drive/v3/files/${f.id}?alt=media&key=${API_KEY}`; dl.target='_blank'; dl.rel='noopener'; dl.innerHTML=`<svg viewBox=\"0 0 24 24\" fill=\"none\"><path d=\"M12 3v10m0 0 4-4m-4 4-4-4M4 20h16\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>`; row.append(title, dl); container.appendChild(row); }
+
+  async function drawSearch(query){ crumbsSet([{label:'Home',to:{}},{label:`Search: ${query}`,to:{q:query}}]); renderSearchResultsHeader(query); const list=document.getElementById('globalResults'); list.innerHTML='<div class=\"small\">Scanning mapped folders…</div>'; const concurrency=6; let idx=0, resultsCount=0; list.innerHTML=''; async function worker(){ while(idx<FOLDER_INDEX.length){ const i=idx++; const meta=FOLDER_INDEX[i]; try{ const files = isAdminSignedIn() ? await searchFolderPrivate(meta.folderId, query) : await searchFolderPublic(meta.folderId, query); files.forEach(f=>{ appendSearchItem(list, meta, f); resultsCount++; }); }catch(e){} } } const workers=Array.from({length:Math.min(concurrency,FOLDER_INDEX.length)}, worker); await Promise.all(workers); if(resultsCount===0){ list.innerHTML='<div class=\"small\">No results.</div>'; } }
+
+  /* ===== Upload helper ===== */
+  async function uploadToDrive(folderId, file){ const boundary='-------314159265358979323846'; const delimiter=`\\r\\n--${boundary}\\r\\n`; const closeDelim=`\\r\\n--${boundary}--`; const meta={ name:file.name, parents:[folderId] }; const ab=await file.arrayBuffer(); const b64=btoa(String.fromCharCode(...new Uint8Array(ab))); const body=delimiter+'Content-Type: application/json; charset=UTF-8\\r\\n\\r\\n'+JSON.stringify(meta)+ delimiter+'Content-Type: '+(file.type||'application/octet-stream')+'\\r\\nContent-Transfer-Encoding: base64\\r\\n\\r\\n'+b64+closeDelim; const r=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,webViewLink',{ method:'POST', headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'multipart/related; boundary='+boundary}, body }); if(!r.ok){ const j=await r.json().catch(()=>({})); throw new Error(j.error?.message||'Upload failed'); } const created=await r.json(); return created.id; }
+
+  function escapeHtml(s){ return (s||'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;','\\'':'&#39;'}[c])); }
+
+  /* ===== Router draw ===== */
+  function draw(){
+    const p=params();
+    const b=p.get('bakery'); const m=p.get('machine'); const c=p.get('cat'); const q=p.get('q');
+    if(q){ drawSearch(q); return; }
+    if(!b){ drawHome(); return; }
+    if(b && !m){ drawBakery(b); return; }
+    if(b && m && !c){ drawMachine(b,m); return; }
+    if(b && m && c){ drawCategory(b,m,c); return; }
+  }
+  window.addEventListener('load', draw);
+
+  /* ===== Global search form ===== */
+  const gsForm=document.getElementById('globalSearchForm'); const gsInput=document.getElementById('globalSearchInput'); const clearBtn=document.getElementById('clearSearchBtn');
+  if(gsForm){ gsForm.addEventListener('submit',(e)=>{ e.preventDefault(); const q=(gsInput.value||'').trim(); if(q){ go({q}); clearBtn.style.display=''; } else { go({}); clearBtn.style.display='none'; } }); }
+  if(clearBtn){ clearBtn.addEventListener('click', ()=>{ gsInput.value=''; go({}); clearBtn.style.display='none'; }); }
+
+  /* ===== Robust PIN gate (independent) ===== */
+  (function(){
+    const PIN_CODE_VALUE = '2906';
+    const PERSIST_UNLOCK = true;
+
+    function initPinGate(){
+      const lock = document.getElementById('lockscreen');
+      const pinInput = document.getElementById('pinInput');
+      const pinBtn = document.getElementById('pinBtn');
+      const pinMsg = document.getElementById('pinMsg');
+      if(!lock||!pinInput||!pinBtn||!pinMsg) return;
+
+      function unlock(){ lock.style.display='none'; try{ if(PERSIST_UNLOCK) sessionStorage.setItem('unlocked','1'); }catch{} }
+      function wrong(){ pinMsg.style.display='block'; setTimeout(()=>pinMsg.style.display='none', 2000); pinInput.focus(); pinInput.select(); }
+      function checkPin(){ const val=(pinInput.value||'').trim(); if(val===PIN_CODE_VALUE) unlock(); else wrong(); }
+
+      if(PERSIST_UNLOCK && sessionStorage.getItem('unlocked')==='1'){ lock.style.display='none'; return; }
+
+      pinBtn.addEventListener('click',(e)=>{ e.preventDefault(); e.stopPropagation(); checkPin(); });
+      pinInput.addEventListener('keydown',(e)=>{ if(e.key==='Enter'){ e.preventDefault(); checkPin(); } });
+      pinInput.focus();
+    }
+
+    if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', initPinGate); }
+    else { initPinGate(); }
+  })();
   </script>
 </body>
 </html>
+"""
 
+with open("/mnt/data/panelto_portal.html", "w", encoding="utf-8") as f:
+    f.write(html)
+
+"/mnt/data/panelto_portal.html"
 
