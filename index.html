@@ -39,7 +39,7 @@
   .icon-btn svg{width:16px;height:16px;display:block}
 
   /* Data table */
-  .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px;background:#fff}
+  .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:0 0 12px 12px;background:#fff}
   table.data{width:100%;border-collapse:separate;border-spacing:0;font-size:0.96rem}
   .data thead th{position:sticky;top:0;z-index:1;background:#f8fafc;border-bottom:1px solid var(--line);padding:10px;text-align:left;white-space:nowrap;user-select:none;cursor:pointer}
   .data thead th .hint{font-weight:600}
@@ -49,9 +49,20 @@
   .data tbody tr:hover{background:var(--hover)}
   .data .cell-mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9em;color:#334155}
   .data td, .data th { overflow-wrap:anywhere; word-break:break-word; }
-  .data td.wide, .data th.wide { min-width:420px; }
-  /* Wider Asset column */
-  .data td.asset, .data th.asset { min-width:260px; white-space:nowrap; }
+  .data td.wide, .data th.wide { min-width:420px; }           /* Job Description / Action Taken */
+  .data td.asset, .data th.asset { min-width:260px; white-space:nowrap; } /* Asset column */
+
+  /* Top horizontal scrollbar for wide tables (Work History) */
+  .scroll-x-top{
+    overflow-x:auto; overflow-y:hidden;
+    height:14px; background:#fff;
+    border:1px solid var(--line);
+    border-bottom:0;
+    border-radius:12px 12px 0 0;
+  }
+  .scroll-x-top::-webkit-scrollbar{height:12px}
+  .scroll-x-top::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:8px}
+  .scroll-x-top::-webkit-scrollbar-track{background:#f8fafc;border-radius:8px}
 
   footer{height:1px}
 </style>
@@ -152,7 +163,7 @@
       'AHU':          {documentation:'1QMKYSOQ-N0LVANk8MZNiB07DTKI-QC7U', works:'1tSXor0e_YtcabRFabUO_AOhEMjzTttuh', electrical:'1m3CYpvbWyqJBX022oiOwJNcBayqOFF1a', procedures:'1PcPbWgBbTDnPZAidlPI-_T4-fpJP2q0o'}
     },
     'Bakery 3': {
-      'Site 1 Packing': {documentation:'1J210oJpvaS2VhXOMaQm8oXAFbCW8FDa7', works:'1emCk6hQQF25eMn8D7LyJD4uyqt4vFfQW', electrical:'1mG4EyGxk4Be4nbV_WW316FqzuTl1QCR-', procedures:'1DJwbexql1dakzKXYDvofvFam9vTuikS'},
+      'Site 1 Packing': {documentation:'1J210oJpvaS2VhXOMaQm8oXAFbCW8FDa7', works:'1emCk6hQQF25eMn8D7LyJD4uyqt4vFfQW', electrical:'1mG4EyGxk4Be4nbV_WW316FqzuTl1QCR-', procedures:'1DJwbexql1dakzKXYdvofvFam9vTuikS'.replace('d','')},
       'Site 2 Packing': {documentation:'1OovqnA9jsAdFJSxeeWj9Dr9K4VUya5yi', works:'15C_uMSqzoJjdSpBfE6xVpBEbiWeBgZn-', electrical:'17pLXNKAOomUOwo642WazWVboOwJiZPCl', procedures:'1u1Ipt5v375gwd8CufIkc3TckKTQA-dKE'},
       'Paletiser':      {documentation:'1exaNF6HaJVw4D8ODVdDDiurYhxGzmn-8', works:'1Nd3vqzlvIw2reDo2ELeCw5q_UC5YRR8y', electrical:'1r8lSFtNAwSoMpPSVouj7Jv39WeL5xmXw', procedures:'1CNgEId5CKxNlMcwmZxJsIG0DQB266s5Y'},
       'Retail':         {documentation:'1tghnGJ1e09FnOwhTV1UKZpSl-XRT62On', works:'1hoUvzxjpA6z2TTggwiSj-7CMfkQ40rCB', electrical:'1QIkmIstBW4RKryafamYp38Jnr3DLLtlm', procedures:'1soZAoyN9pp4xTkKcQczMH37Yqx8t48EA'}
@@ -464,7 +475,7 @@
     throw new Error('No sheetName or gid configured.');
   }
 
-  /* ===== Work History renderer (types + nice date display) ===== */
+  /* ===== Work History renderer (with top scrollbar) ===== */
   function renderWorksTable(container, table, sheetId){
     container.innerHTML = '';
 
@@ -477,6 +488,14 @@
     adminBtns.style.display = isAdminSignedIn() ? 'flex' : 'none';
     bar.append(search, adminBtns);
     container.appendChild(bar);
+
+    /* ⬇️ Gornji horizontalni klizač */
+    const topScroll = document.createElement('div');
+    topScroll.className = 'scroll-x-top';
+    const topInner = document.createElement('div');
+    topInner.style.height = '1px';
+    topScroll.appendChild(topInner);
+    container.appendChild(topScroll);
 
     const wrap = document.createElement('div'); wrap.className='table-wrap';
     const tableEl = document.createElement('table'); tableEl.className='data';
@@ -536,7 +555,7 @@
         if (isNaN(na) && isNaN(nb)) return 0;
         if (isNaN(na)) return 1;
         if (isNaN(nb)) return -1;
-        return na - nb;
+        return na - nb;                // najstarije → najnovije
       } else if (t==='number'){
         const na = Number(va); const nb = Number(vb);
         if (isNaN(na) && isNaN(nb)) return 0;
@@ -566,6 +585,16 @@
       return String(v ?? '');
     }
 
+    /* ⬇️ sinkronizacija gornjeg i donjeg scrolla */
+    function syncTopWidth(){
+      topInner.style.width = tableEl.scrollWidth + 'px';
+    }
+    function syncFromTop(){ wrap.scrollLeft = topScroll.scrollLeft; }
+    function syncFromBottom(){ topScroll.scrollLeft = wrap.scrollLeft; }
+    topScroll.addEventListener('scroll', syncFromTop, {passive:true});
+    wrap.addEventListener('scroll', syncFromBottom, {passive:true});
+    window.addEventListener('resize', ()=>requestAnimationFrame(syncTopWidth));
+
     function renderBody(){
       const q = (search.value||'').toLowerCase();
       tbody.innerHTML = '';
@@ -586,6 +615,7 @@
         });
         tbody.appendChild(tr);
       });
+      requestAnimationFrame(syncTopWidth); // osvježi širinu gornjeg slidera
     }
 
     function sortBy(colIdx){
@@ -595,6 +625,7 @@
       renderBody();
     }
 
+    // inicijalno: sort po "Completed On" ako postoji, najstarije→najnovije
     const completedCol = table.headers.findIndex(h =>
       h && /^(completed\s*on|completed|completion\s*date|date\s*completed)$/i.test(String(h).trim())
     );
@@ -687,7 +718,7 @@
       const sheetEntry = WORKS_SHEETS?.[b]?.[m];
       if (sheetEntry && sheetEntry.sheetId) {
         refresh.style.display = 'none';
-        drawWorksSheetView(b, m, list).catch(e => { list.innerHTML = `<div class=\"small\">Failed to load Work History: ${escapeHtml(e.message||String(e))}</div>`; });
+        drawWorksSheetView(b, m, list).catch(e => { list.innerHTML = `<div class="small">Failed to load Work History: ${escapeHtml(e.message||String(e))}</div>`; });
         adminBtn.onclick = async () => { try{ await ensureAuth(); adminBtn.style.display='none'; refreshHint(); openFolderBtn.style.display=''; }catch(e){ alert('Sign-in failed: ' + (e.message || String(e))); } };
         return;
       }
@@ -715,13 +746,13 @@
           const row=document.createElement('div'); row.className='item';
           const title=document.createElement('a'); title.className='title'; title.href='#';
           title.onclick=(e)=>{ e.preventDefault(); openInlinePreview(f,false); };
-          const when=f.modifiedTime?new Date(f.modifiedTime).toLocaleString():''; 
+          const when=f.modifiedTime?new Date(f.modifiedTime).toLocaleString():'';
           title.innerHTML=`<div><strong>${escapeHtml(f.name)}</strong><div class="meta">${escapeHtml(f.mimeType||'')} • ${escapeHtml(when)}</div></div>`;
           const dl=document.createElement('a'); dl.className='icon-btn'; dl.href=publicDownloadUrl(f.id); dl.target='_blank'; dl.rel='noopener';
-          dl.innerHTML=`<svg viewBox=\"0 0 24 24\" fill=\"none\"><path d=\"M12 3v10m0 0 4-4m-4 4-4-4M4 20h16\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>`;
+          dl.innerHTML=`<svg viewBox="0 0 24 24" fill="none"><path d="M12 3v10m0 0 4-4m-4 4-4-4M4 20h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
           row.append(title,dl); list.appendChild(row);
         });
-      }catch(e){ list.innerHTML=`<div class=\"small\">Public list error: ${escapeHtml(e.message||String(e))}</div>`; }
+      }catch(e){ list.innerHTML=`<div class="small">Public list error: ${escapeHtml(e.message||String(e))}</div>`; }
     }
 
     /* PRIVATE listing (admin) — with DELETE */
@@ -739,12 +770,12 @@
           const row=document.createElement('div'); row.className='item';
           const title=document.createElement('a'); title.className='title'; title.href='#'; title.onclick=(e)=>{ e.preventDefault(); openInlinePreview(f,true); };
           const when=f.modifiedTime?new Date(f.modifiedTime).toLocaleString():'';
-          title.innerHTML=`<div><strong>${escapeHtml(f.name)}</strong><div class=\"meta\">${escapeHtml(f.mimeType||'')} • ${escapeHtml(when)}</div></div>`;
+          title.innerHTML=`<div><strong>${escapeHtml(f.name)}</strong><div class="meta">${escapeHtml(f.mimeType||'')} • ${escapeHtml(when)}</div></div>`;
           const right=document.createElement('div'); right.style.display='flex'; right.style.gap='8px';
           const dl=document.createElement('a'); dl.className='icon-btn'; dl.href=`https://www.googleapis.com/drive/v3/files/${f.id}?alt=media`; dl.target='_blank'; dl.rel='noopener';
-          dl.innerHTML=`<svg viewBox=\"0 0 24 24\" fill=\"none\"><path d=\"M12 3v10m0 0 4-4m-4 4-4-4M4 20h16\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>`;
+          dl.innerHTML=`<svg viewBox="0 0 24 24" fill="none"><path d="M12 3v10m0 0 4-4m-4 4-4-4M4 20h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
           const del=document.createElement('button'); del.className='icon-btn';
-          del.innerHTML=`<svg viewBox=\"0 0 24 24\" fill=\"none\"><path d=\"M6 7h12M10 7v12m4-12v12M9 7l1-2h4l1 2M6 7l1 14h10l1-14\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>`;
+          del.innerHTML=`<svg viewBox="0 0 24 24" fill="none"><path d="M6 7h12M10 7v12m4-12v12M9 7l1-2h4l1 2M6 7l1 14h10l1-14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
           del.onclick=async()=>{
             if(!confirm('Delete file?')) return;
             try{ await gapi.client.drive.files.delete({fileId:f.id}); await privateListFiles(); }
