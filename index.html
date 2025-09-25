@@ -165,7 +165,7 @@
     'Bakery 3': {
       'Site 1 Packing': {documentation:'1J210oJpvaS2VhXOMaQm8oXAFbCW8FDa7', works:'1emCk6hQQF25eMn8D7LyJD4uyqt4vFfQW', electrical:'1mG4EyGxk4Be4nbV_WW316FqzuTl1QCR-', procedures:'1DJwbexql1dakzKXYdvofvFam9vTuikS'.replace('d','')},
       'Site 2 Packing': {documentation:'1OovqnA9jsAdFJSxeeWj9Dr9K4VUya5yi', works:'15C_uMSqzoJjdSpBfE6xVpBEbiWeBgZn-', electrical:'17pLXNKAOomUOwo642WazWVboOwJiZPCl', procedures:'1u1Ipt5v375gwd8CufIkc3TckKTQA-dKE'},
-      'Paletiser':      {documentation:'1exaNF6HaJVw4D8ODVdDDiurYhxGzmn-8', works:'1Nd3vqzlvIw2reDo2ELeCw5q_UC5YRR8y', electrical:'1r8lSFtNAwSoMpPSVouj7Jv39WeL5xmXw', procedures:'1CNgEId5CKxNlMcwmZxJsIG0DQB266s5Y'},
+      'Paletiser':      {documentation:'1exaNF6HaJVw4D8ODVdDDiurYhxGzmn-8', works:'1Nd3vqzlvIw2reDo2ELeCw5q_UC5YRR8y', electrical:'1r8lSFtNAwSoMpPSVouj7Jv39WeL5xmXw', procedures:'1CNgEId5CKxNlMcwmZxJs IG0DQB266s5Y'.replace(' ','')},
       'Retail':         {documentation:'1tghnGJ1e09FnOwhTV1UKZpSl-XRT62On', works:'1hoUvzxjpA6z2TTggwiSj-7CMfkQ40rCB', electrical:'1QIkmIstBW4RKryafamYp38Jnr3DLLtlm', procedures:'1soZAoyN9pp4xTkKcQczMH37Yqx8t48EA'}
     }
   };
@@ -185,8 +185,7 @@
         sheetName: 'Work History without routines',
         gid: '1835750486'
       },
-      'Mixing': { sheetId: '1-8xwFTKmxRhi4IqwhEw7ugCWgxHKhZit9LOcWUZgcxw', sheetName: 'Work Histories', gid: '0'},
-
+      'Mixing': { sheetId: '1-8xwFTKmxRhi4IqwhEw7ugCWgxHKhZit9LOcWUZgcxw', sheetName: 'Work Histories', gid: '0' }
     },
     'Bakery 2': {},
     'Bakery 3': {}
@@ -477,7 +476,7 @@
     throw new Error('No sheetName or gid configured.');
   }
 
-  /* ===== Work History renderer (with top scrollbar) ===== */
+  /* ===== Work History renderer (with top scrollbar + robust default date sort) ===== */
   function renderWorksTable(container, table, sheetId){
     container.innerHTML = '';
 
@@ -491,7 +490,7 @@
     bar.append(search, adminBtns);
     container.appendChild(bar);
 
-    /* ⬇️ Gornji horizontalni klizač */
+    /* Top horizontal scrollbar */
     const topScroll = document.createElement('div');
     topScroll.className = 'scroll-x-top';
     const topInner = document.createElement('div');
@@ -530,11 +529,12 @@
 
     let currentRows = table.rows.slice();
 
+    /* Infer types */
     const inferredTypes = (table.types && table.types.length===table.headers.length)
       ? table.types.slice()
       : table.headers.map((_, col) => {
           let isDate=true, isNum=true;
-          for (let i=0;i<Math.min(currentRows.length, 30);i++){
+          for (let i=0;i<Math.min(currentRows.length, 50);i++){
             const v = currentRows[i][col];
             if (v==null || v==='') continue;
             const n = Number(v);
@@ -545,6 +545,29 @@
           }
           return isDate ? 'date' : (isNum ? 'number' : 'text');
         });
+
+    /* Pick best default date column (works for Mixing too) */
+    function pickBestDateColumn(){
+      // 1) by header name
+      const byName = table.headers.findIndex(h =>
+        h && /^(completed\s*on|completed|completion\s*date|date\s*completed|date\/time|date|datum)$/i.test(String(h).trim())
+      );
+      if (byName !== -1) return byName;
+
+      // 2) by content: column with most valid dates in sample
+      let bestCol = -1, bestCount = 0;
+      for (let c=0; c<table.headers.length; c++){
+        let cnt = 0;
+        for (let i=0; i<Math.min(currentRows.length, 200); i++){
+          const v = currentRows[i]?.[c];
+          if (v==null || v==='') continue;
+          const d = parseDateSmart(v);
+          if (!isNaN(d)) cnt++;
+        }
+        if (cnt > bestCount){ bestCount = cnt; bestCol = c; }
+      }
+      return bestCount > 0 ? bestCol : -1;
+    }
 
     let sortCol = -1, sortDir = 1;
 
@@ -557,7 +580,7 @@
         if (isNaN(na) && isNaN(nb)) return 0;
         if (isNaN(na)) return 1;
         if (isNaN(nb)) return -1;
-        return na - nb;                // najstarije → najnovije
+        return na - nb;                // ascending: oldest → newest
       } else if (t==='number'){
         const na = Number(va); const nb = Number(vb);
         if (isNaN(na) && isNaN(nb)) return 0;
@@ -587,10 +610,8 @@
       return String(v ?? '');
     }
 
-    /* ⬇️ sinkronizacija gornjeg i donjeg scrolla */
-    function syncTopWidth(){
-      topInner.style.width = tableEl.scrollWidth + 'px';
-    }
+    /* sync top/bottom scroll */
+    function syncTopWidth(){ topInner.style.width = tableEl.scrollWidth + 'px'; }
     function syncFromTop(){ wrap.scrollLeft = topScroll.scrollLeft; }
     function syncFromBottom(){ topScroll.scrollLeft = wrap.scrollLeft; }
     topScroll.addEventListener('scroll', syncFromTop, {passive:true});
@@ -617,7 +638,7 @@
         });
         tbody.appendChild(tr);
       });
-      requestAnimationFrame(syncTopWidth); // osvježi širinu gornjeg slidera
+      requestAnimationFrame(syncTopWidth);
     }
 
     function sortBy(colIdx){
@@ -627,13 +648,14 @@
       renderBody();
     }
 
-    // inicijalno: sort po "Completed On" ako postoji, najstarije→najnovije
-    const completedCol = table.headers.findIndex(h =>
+    // initial default sort
+    let completedCol = table.headers.findIndex(h =>
       h && /^(completed\s*on|completed|completion\s*date|date\s*completed)$/i.test(String(h).trim())
     );
+    if (completedCol === -1) completedCol = pickBestDateColumn();
     if (completedCol !== -1){
       sortCol = completedCol;
-      sortDir = 1;
+      sortDir = 1; // oldest → newest
       currentRows.sort((a,b)=> sortDir * cmp(a,b,completedCol) );
     }
 
